@@ -37,16 +37,6 @@ O projeto é **open source** e tem como objetivo ensinar sobre redes, protocolos
 - MicroSD registra logs de redes e status de conexão.  
 - Bateria 5V alimenta o dispositivo de forma móvel.  
 
-### Software
-
-O firmware do Node-Bee é dividido em módulos:
-
-- `wifi_scan` → escaneamento e filtragem de redes abertas  
-- `fsm_control` → máquina de estados e botões  
-- `sd_logger` → gravação de logs no microSD  
-- `display` → atualização da tela OLED  
-- `main` → loop principal, inicialização e integração dos módulos  
-
 ---
 
 ## Máquina de Estados (FSM)
@@ -58,23 +48,6 @@ O firmware do Node-Bee é dividido em módulos:
 5. **Logging** → registra informações no microSD  
 
 > A FSM garante que cada ação seja controlada e previsível, facilitando testes e aprendizado.
-
----
-
-## Instalação e Testes
-
-1. Conecte o ESP32 ao computador via USB.  
-2. Instale as bibliotecas necessárias:  
-   - `WiFi.h`  
-   - `SPI.h` e `SD.h`  
-   - `Adafruit_SSD1306` (para OLED)  
-3. Compile e envie o código.  
-4. Teste cada módulo individualmente:  
-   - Scan Wi-Fi  
-   - Botões  
-   - Tela OLED  
-   - Logging no microSD  
-5. Após testes bem-sucedidos, o Node-Bee pode ser usado com bateria 5V para mobilidade.  
 
 ---
 
@@ -96,5 +69,5 @@ O firmware do Node-Bee é dividido em módulos:
 
 ## Licença
 
-Este projeto é **open source**, licenciado sob MIT License.  
+Este projeto é **open source**, licenciado sob Apache 2.0 License.  
 O código pode ser estudado, modificado e compartilhado, **desde que o uso continue educacional e ético**.
