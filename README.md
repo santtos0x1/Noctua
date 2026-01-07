@@ -13,7 +13,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 ## Objetivos do Projeto
 
-- Realizar **scan passivo** de redes Wi-Fi próximas.  
+- Realizar **scan passivo** de redes Wi-Fi próximas e dispositivos BLE.  
 - Identificar **redes abertas e protegidas**, sem tentativa de invasão.  
 - Coletar metadados técnicos relevantes para estudo e análise.  
 - Registrar dados em **microSD** para análise offline posterior.  
