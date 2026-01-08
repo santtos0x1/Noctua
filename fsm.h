@@ -14,4 +14,4 @@ extern State currentState;
 void fsmUpdate();
 void fsmInit();
 
-#endif
+#endif // !FSM_H
