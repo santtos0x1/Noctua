@@ -10,7 +10,7 @@ void fsmUpdate()
     switch(currentState)
     {
         case IDLE:
-        currentState = SCAN;
+            currentState = SCAN;
             break;
 
         case SCAN:
