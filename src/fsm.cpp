@@ -1,8 +1,28 @@
-#ifndef FSM_H
-#define FSM_H
+#include "fsm.h"
 
-enum State {
-    
+void fsmInit()
+{
+    currentState = IDLE;
 }
 
-#endif
+void fsmUpdate()
+{
+    switch(currentState)
+    {
+        case IDLE:
+        currentState = SCAN;
+            break;
+
+        case SCAN:
+            currentState = PROCESS;
+            break;
+        
+        case PROCESS:
+            currentState = DONE;
+            break;
+    
+        case DONE:
+            currentState = IDLE;
+            break;
+    }
+}
