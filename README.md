@@ -14,7 +14,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 ## Objetivos do Projeto
 
 - Realizar **scan passivo** de redes Wi-Fi próximas e dispositivos BLE.  
-- Identificar **redes abertas e protegidas**, sem tentativa de invasão.  
+- Identificar **redes abertas**, sem tentativa de invasão.  
 - Coletar metadados técnicos relevantes para estudo e análise.  
 - Registrar dados em **microSD** para análise offline posterior.  
 - Explorar conceitos de FSM, eventos, estados e logging em sistemas embarcados.  
@@ -31,9 +31,10 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 - Banda (2.4 GHz / 5 GHz)  
 - RSSI (intensidade do sinal)  
 - Tipo de segurança  
-- Timestamp do scan  
-
-> ⚠️ Conexão à rede **não é obrigatória** e **não é o foco principal** do projeto.
+- O IP recebido pelo dispositivo
+- Se status do DHCP
+- Máscara de sub-rede
+- Hostname
 
 ---
 
@@ -44,14 +45,12 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 - RSSI  
 - Tipo de endereço  
 - Canal BLE observado  
-- Timestamp do scan  
 
 ---
 
 ### Dados de Log
 
-- ID do arquivo de log  
-- Data de criação  
+- UUID do arquivo de log
 
 ---
 
@@ -99,14 +98,6 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 - Noctua **não executa sniffing ativo**, ataques ou exploração.  
 - Não coleta credenciais, payloads ou dados pessoais.  
 - O projeto existe para **entender como redes funcionam**, não para quebrá-las.  
-
----
-
-## Possíveis Expansões Futuras
-
-- Integração com GPS externo para mapeamento geográfico.  
-- Modo de economia de energia.  
-- Interface serial para análise em tempo real no PC.  
 
 ---
 
