@@ -12,17 +12,19 @@ UUID sessionUUID;
 WiFiData receivedWiFiData;
 BTData receivedBTData;
 
-bool setupSD()
+void setupSD()
 {
     sessionUUID = UUID::generate();
     Serial.println("Starting the SD Card");
-    while (!SD.begin())
+    while (!SD.begin(5))
     {
         delay(500);
         Serial.print(".");
     }
+    
     SD.mkdir("/wifi_log_data");
     SD.mkdir("/bluetooth_log_data");
+
     Serial.println("\nSucessfully started the SD Card!");
 }
 
@@ -33,6 +35,7 @@ void logWiFiData()
 {
     if (xQueueReceive(WiFiQueue, &receivedWiFiData, pdMS_TO_TICKS(100)))
     {
+        Serial.printf("Creating file: '%s'", WiFiFileName)
         File dataFile = SD.open(WiFiFileName);
         if (dataFile)
         {
@@ -62,6 +65,7 @@ void logBTData()
     if (xQueueReceive(BTQueue, &receivedBTData, pdMS_TO_TICKS(100)))
     {
         File dataFile = SD.open(BTFileName);
+        Serial.printf("Creating file: '%s'.", BTFileName);
         if (dataFile)
         {
             dataFile.printf("%s,%s,%d,%s,%d\n",
@@ -71,7 +75,7 @@ void logBTData()
                             receivedBTData.addressType,
                             receivedBTData.channel);
             dataFile.close();
-            Serial.printf("Sucessfully saved on %s\n", logBTData);
+            Serial.println("Data sucessfully saved"");
         }
         else
         {
