@@ -12,8 +12,8 @@ bool initSD()
 
 void logWiFiData()
 {
- if(xQueueReceive(wifiQueue, &receivedData, portMAX_DELAY)) 
- {
-  // log information in SD here 
- } 
+    if (xQueueReceive(wifiQueue, &receivedData, portMAX_DELAY))
+    {
+        // log information in SD here
+    }
 }

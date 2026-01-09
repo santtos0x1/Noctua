@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-struct wifiData
+struct WiFiData
 {
   //Without connection
   char ssid[33];
@@ -20,11 +20,17 @@ struct wifiData
   unsigned long timestamp;
 }
 
-extern QueueHandle_t wifiQueue;
-
-struct bleData
+struct BTData
 {
-
+    char name[33];
+    char address[18];
+    int rssi;        
+    char addressType[20];
+    unsigned long timestamp;
+    int channel;
 }
+
+extern QueueHandle_t WiFiQueue;
+extern QueueHandle_t BTQueue;
 
 #endif // !CONFIG_H
