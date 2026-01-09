@@ -2,6 +2,7 @@
 #include "config.h"
 #include <WiFi.h>
 #include <esp_wifi.h>
+#include <Arduino.h>
 
 #define CONN_TIMEOUT_MS (10 * 1000)
 

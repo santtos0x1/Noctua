@@ -3,6 +3,7 @@
 #include <BLEDevice.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
+#include <Arduino.h>
 
 #define scanTime 5
 

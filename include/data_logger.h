@@ -1,6 +1,7 @@
 #ifndef DATA_LOGGER_H
 #define DATA_LOGGER_H
 
+#include "config.h"
 #include <Arduino.h>
 
 bool setupSD();
