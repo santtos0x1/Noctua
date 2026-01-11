@@ -5,18 +5,23 @@
 #include "data_logger.h"
 #include "watchdog.h"
 #include "indicator.h"
+#include "web_server.h"
 
 // Libs
 #include <Arduino.h>
 
 #define BTN_A_PINOUT 14
 #define BTN_B_PINOUT 16
+#define BTN_C_PINOUT 18
 #define BUILT_IN_LED 2
 
 bool btnALastState = HIGH;
 bool btnBLastState = HIGH;
+bool btnCLastState = HIGH;
 
 String scanMode;
+
+bool serverStatus = false;
 
 void setupFSM()
 {
@@ -25,6 +30,7 @@ void setupFSM()
     setupBT();
     setupSD();
     setupIndicator(BUILT_IN_LED);
+    serverStatus = startServer();
 
     // Setting PINs
     pinMode(BTN_A_PINOUT, INPUT_PULLUP);
@@ -38,6 +44,7 @@ void runFSM()
 {
     bool btnAPressed = (digitalRead(BTN_A_PINOUT) == LOW && btnALastState == HIGH);
     bool btnBPressed = (digitalRead(BTN_B_PINOUT) == LOW && btnBLastState == HIGH);
+    bool btnCPressed = (digitalRead(BTN_C_PINOUT) == LOW && btnCLastState == HIGH);
 
     switch(currentState)
     {
@@ -47,12 +54,19 @@ void runFSM()
             if(btnAPressed)
             {
                 scanMode = "WF";
+                currentState = SCAN;
+                break;
             } else if(btnBPressed) {
                 scanMode = "BT";
+                currentState = SCAN;
+                break;
+            } else if(btnCPressed) {
+                scanMode = "WS"
+                currentState = WEB_SERVER;
+                break;
             }
 
-            currentState = SCAN;
-            break;
+            
 
         case SCAN:
             Serial.println("Current FSM state: SCAN");
@@ -89,6 +103,19 @@ void runFSM()
             }
 
             showProcessing(BUILT_IN_LED);
+
+            currentState = IDLE;
+            break;
+
+        case WEB_SERVER:
+            Serial.println("Current FSM state: WEB_SERVER");
+            
+            if(serverStatus)
+            {
+                
+            } else {
+                showError(BUILT_IN_LED);
+            }
 
             currentState = IDLE;
             break;

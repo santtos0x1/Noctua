@@ -7,7 +7,8 @@ enum State
 {
     IDLE,
     SCAN,
-    PROCESS
+    PROCESS,
+    WEB_SERVER
 };
 
 extern State currentState;

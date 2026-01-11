@@ -39,6 +39,8 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 - **Feedback Visual Inteligente:** Sistema de sinalização via LED para indicação de estados, erros de gravação e intensidade de sinal.
 
+- **Servidor de Acesso Remoto (HTTP):** Interface web integrada que permite a listagem e o download de logs diretamente via navegador, eliminando a necessidade de remoção física do cartão microSD.
+
 ---
 
 ## O que o Noctua Coleta
