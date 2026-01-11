@@ -25,7 +25,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 - Scan passivo de redes **Wi-Fi** proximas.
 - **Coleta de dados** públicos da rede aberta ao se conectar.
-- Scan passivo de dispositivos conectados ao **Bluetooth**.
+- Scan passivo de dispositivos **Bluetooth**.
 - **Saida serial** para debug do dispositivo.
 - **Modularização** do projeto do projeto para organização e implementação de novas funcionalidades.
 - Registro de dados offline em um cartão **microSD**.
