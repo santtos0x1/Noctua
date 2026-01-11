@@ -23,13 +23,21 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 ## Funcionalidades
 
-- Scan passivo de redes **Wi-Fi** proximas.
-- **Coleta de dados** públicos da rede aberta ao se conectar.
-- Scan passivo de dispositivos **Bluetooth**.
-- **Saida serial** para debug do dispositivo.
-- **Modularização** do projeto do projeto para organização e implementação de novas funcionalidades.
-- Registro de dados offline em um cartão **microSD**.
-- **Watchdog** responsável para garantir a inicialização do microSD.
+- **Monitoramento Multi-protocolo:** Varredura passiva de redes Wi-Fi e dispositivos Bluetooth (Classic/BLE) em tempo real.
+
+- **Captura de Metadados:** Coleta automática de informações públicas de redes abertas durante o processo de conexão.
+
+- **Persistência de Dados Offline:** Registro estruturado de logs em cartão microSD (formato CSV), facilitando a análise posterior em softwares de planilhas.
+
+- **Arquitetura Modular:** Código totalmente desacoplado em módulos específicos (FSM, Scanners, Logger, Indicators), garantindo escalabilidade e fácil manutenção.
+
+- **Gerenciamento de Estados (FSM):** Lógica baseada em Máquina de Estados Finita para um fluxo previsível.
+
+- **Resiliência de Hardware (Watchdog):** Sistema de verificação contínua para garantir a inicialização e disponibilidade do módulo microSD.
+
+- **Interface de Diagnóstico:** debug via saída serial (suporte nativo para conversores CH340).
+
+- **Feedback Visual Inteligente:** Sistema de sinalização via LED para indicação de estados, erros de gravação e intensidade de sinal.
 
 ---
 
