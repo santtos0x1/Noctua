@@ -41,10 +41,14 @@ void runFSM()
     switch(currentState)
     {
         case IDLE:
-            Serial.println("Current FSM state: IDLE")
+            Serial.println("Current FSM state: IDLE");
 
-            if(btnAPressed) scanMode = "WF";
-            else if(btnBPressed) scanMode = "BT";
+            if(btnAPressed)
+            {
+                scanMode = "WF";
+            } else if(btnBPressed) {
+                scanMode = "BT";
+            }
 
             currentState = SCAN;
             break;
@@ -64,8 +68,12 @@ void runFSM()
             
             digitalWrite(BUILT_IN_LED, HIGH);
             
-            if(scanMode == "WF") WiFiSniffer();
-            else if(scanMode == "BT") BTSniffer();
+            if(scanMode == "WF")
+            {
+                WiFiSniffer();
+            } else if(scanMode == "BT") {
+                BTSniffer();
+            }
 
             for(int i = 0; i < 5; i++)
             {
@@ -80,8 +88,12 @@ void runFSM()
         case PROCESS:
             Serial.println("Current FSM state: PROCESS");
 
-            if(scanMode == "WF") logWiFiData();
-            else if (scanMode == "BT") logBTData();
+            if(scanMode == "WF")
+            {
+                logWiFiData();
+            } else if (scanMode == "BT") {
+                logBTData();
+            }
 
             for(int i = 0; i <= 2; i++)
             {

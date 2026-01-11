@@ -80,7 +80,7 @@ void WiFiSniffer()
                 }
                 else
                 {
-                    strcpy(data.dhcp, "DHCP status: Inactive, static.");
+                    strcpy(data.dhcp, "DHCP status: Static");
                 }
 
                 WiFi.disconnect();

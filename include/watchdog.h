@@ -3,6 +3,6 @@
 
 #include <Arduino.h>
 
-void runWD();
+bool runWD();
 
-#endif WATCHDOG_H
+#endif // !WATCHDOG_H

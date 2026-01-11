@@ -9,7 +9,7 @@ bool runWD()
 {
     if(SD.cardType() == CARD_NONE)
     {
-        Serial.prinln("Error: Card not found!")
+        Serial.println("Error: Card not found!");
         return false;
     }
     return true;
