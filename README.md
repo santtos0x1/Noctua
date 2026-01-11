@@ -24,7 +24,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 ## Funcionalidades
 
 - Scan passivo de redes **Wi-Fi** proximas.
-- **Coleta de dados** públicos da rede aberta ao conectar a mesma.
+- **Coleta de dados** públicos da rede aberta ao se conectar.
 - Scan passivo de dispositivos conectados ao **Bluetooth**.
 - **Saida serial** para debug do dispositivo.
 - **Modularização** do projeto do projeto para organização e implementação de novas funcionalidades.
