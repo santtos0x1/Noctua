@@ -73,7 +73,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 ## Componentes Necessários
 
 - **1x ESP32 NodeMCU** – microcontrolador principal  
-- **2x Botões táteis** – controle simples do fluxo  
+- **3x Botões táteis** – controle simples do fluxo  
 - **1x Bateria 5V** – operação portátil  
 - **1x Módulo microSD** – armazenamento dos dados coletados  
 
@@ -89,6 +89,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 - Botões:
   - **Botão A** → iniciar novo scan WiFi
   - **Botão B** → iniciar novo scan Bluetooth
+  - **Botão C** → iniciar o servidor HTTP
 
 ---
 
