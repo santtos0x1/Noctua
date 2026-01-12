@@ -15,7 +15,7 @@ int session_id = 0;
 void setupSD()
 {
     bool startSD = SD.begin(SD_CS_PIN);
-    Serial.println("Starting the SD Card");
+    DEBUG_PRINTLN("Starting the SD Card");
     while (!startSD)
     {
         delay(MID_DELAY);
@@ -25,7 +25,7 @@ void setupSD()
     SD.mkdir("/wifi_log_data");
     SD.mkdir("/bluetooth_log_data");
 
-    Serial.println("\nSucessfully started the SD Card!");
+    DEBUG_PRINTLN("\nSucessfully started the SD Card!");
 
     File rCounterData = SD.open("c_tr.txt",FILE_READ);
     if(rCounterData)
@@ -53,7 +53,7 @@ void logWiFiData()
 {
     if (xQueueReceive(WiFiQueue, &receivedWiFiData, pdMS_TO_TICKS(100)))
     {
-        Serial.printf("Creating file: '%s'", WiFiFileName);
+        DEBUG_PRINTF("Creating file: '%s'", WiFiFileName);
 
         File dataFile = SD.open(WiFiFileName);
 
@@ -72,14 +72,14 @@ void logWiFiData()
                             receivedWiFiData.dnsIP,
                             receivedWiFiData.subNetMask);
             dataFile.close();
-            Serial.printf("Sucessfully saved on %s\n", WiFiFileName);
+            DEBUG_PRINTF("Sucessfully saved on %s\n", WiFiFileName);
         } else {
-            Serial.printf("Error opening %s\n", WiFiFileName);
+            DEBUG_PRINTF("Error opening %s\n", WiFiFileName);
         }
 
         if(session_id > RAM_FLUSH_LIM)
         {
-            Serial.println("RAM flush sucessfully done!");
+            DEBUG_PRINTLN("RAM flush sucessfully done!");
             dataFile.flush();
         }
     }
@@ -91,7 +91,7 @@ void logBTData()
     {
         File dataFile = SD.open(BTFileName);
 
-        Serial.printf("Creating file: '%s'.", BTFileName);
+        DEBUG_PRINTF("Creating file: '%s'.", BTFileName);
         
         dataFile.println("NAME, ADRESS, RSSI, ADDRESS TYPE, CHANELL");
         if (dataFile)
@@ -103,14 +103,14 @@ void logBTData()
                             receivedBTData.addressType,
                             receivedBTData.channel);
             dataFile.close();
-            Serial.println("Data sucessfully saved");
+            DEBUG_PRINTLN("Data sucessfully saved");
         } else {
-            Serial.printf("Error opening %s\n", BTFileName);
+            DEBUG_PRINTF("Error opening %s\n", BTFileName);
         }
         
         if(session_id > RAM_FLUSH_LIM)
         {
-            Serial.println("RAM flush sucessfully done!");
+            DEBUG_PRINTLN("RAM flush sucessfully done!");
             dataFile.flush();
         }
     }
@@ -121,20 +121,20 @@ void logWDData()
     if (xQueueReceive(WDQueue, &receivedWDData, pdMS_TO_TICKS(100)))
     {
         File dataFile = SD.open(WDFileName);
-        Serial.printf("Creating file: '%s'.", WDFileName);
+        DEBUG_PRINTF("Creating file: '%s'.", WDFileName);
         if(dataFile)
         {
             dataFile.println("SSID, RSSI");
             dataFile.printf("%s, %d\n", receivedWDData.ssid, receivedWDData.rssi);
             dataFile.close();
-            Serial.println("Data sucessfully saved");
+            DEBUG_PRINTLN("Data sucessfully saved");
         } else {
-            Serial.printf("Error opening %s\n", WDFileName);
+            DEBUG_PRINTF("Error opening %s\n", WDFileName);
         }
         
         if(session_id > RAM_FLUSH_LIM)
         {
-            Serial.println("RAM flush sucessfully done!");
+            DEBUG_PRINTLN("RAM flush sucessfully done!");
             dataFile.flush();
         }
     }

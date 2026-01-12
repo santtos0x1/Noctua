@@ -74,8 +74,8 @@ void setupBT()
 
 void BTSniffer()
 {
-    Serial.println("Starting bluetooth scan.");
+    DEBUG_PRINTLN("Starting bluetooth scan.");
     BLEDevice::getScan()->start(scanTime, false);
     BLEDevice::getScan()->clearResults();
-    Serial.println("BLE Scan done.");
+    DEBUG_PRINTLN("BLE Scan done.");
 }

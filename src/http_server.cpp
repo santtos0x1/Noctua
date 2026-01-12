@@ -27,7 +27,7 @@ bool startServer()
         wifi_auth_mode_t encryptationType = WiFi.encryptionType(i);
         if(encryptationType == WIFI_AUTH_OPEN)
         {
-            Serial.printf("Trying to connect to %s\n", WiFi.SSID(i));
+            DEBUG_PRINTF("Trying to connect to %s\n", WiFi.SSID(i));
             
             if(!manualWiFiConnection)
             {
@@ -42,16 +42,16 @@ bool startServer()
             while (connStatus != WL_CONNECTED && attempts < SERVER_ATTEMPTS_LIMIT) 
             {
                 delay(MID_DELAY);
-                Serial.print(".");
+                DEBUG_PRINT(".");
                 attempts++;
             }
 
             if(connStatus == WL_CONNECTED)
             {
-                Serial.println("Connection estabilished!");
+                DEBUG_PRINTLN("Connection estabilished!");
                 break;
             } else {
-                Serial.println("Cannot connect to this network!");
+                DEBUG_PRINTLN("Cannot connect to this network!");
             }
         }
     }
@@ -60,12 +60,12 @@ bool startServer()
     if(status == WL_CONNECTED)
     {
         server.begin();
-        Serial.println("HTTP Server started!");
-        Serial.print("IP: ");
-        Serial.println(WiFi.localIP());
+        DEBUG_PRINTLN("HTTP Server started!");
+        DEBUG_PRINT("IP: ");
+        DEBUG_PRINTLN(WiFi.localIP());
         return true;
     } else {
-        Serial.println("Cannot open server!");
+        DEBUG_PRINTLN("Cannot open server!");
         return false;
     }
 }

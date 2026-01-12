@@ -7,6 +7,7 @@
 #include "indicator.h"
 #include "http_server.h"
 #include "wardrive.h"
+#include "config.h"
 
 // Libs
 #include <Arduino.h>
@@ -22,9 +23,15 @@ bool serverStatus = false;
 void setupFSM()
 {
     // Initing modules
-    setupWiFi();
-    setupBT();
-    setupSD();
+    #if ENABLE_WIFI
+        setupWiFi();
+    #endif
+    #if ENABLE_BT
+        setupBT();
+    #endif    
+    #if ENABLE_SD
+        setupSD();
+    #endif    
     setupIndicator(BUILT_IN_LED);
     serverStatus = startServer();
     setupWardrive();
@@ -86,52 +93,75 @@ void runFSM()
 
         case SCAN:
         {
-            Serial.println("Current FSM state: SCAN");
-
-            bool SDReport = SDDoctor();
-
-            if(!SDReport)
-            {
-                showError(BUILT_IN_LED);
-                //Try to restart the SD
-                setupSD();
-                currentState = IDLE;
-                break;
-            }
+            DEBUG_PRINTLN("Current FSM state: SCAN");
+            #if ENABLE_SD
+                bool SDReport = SDDoctor();            
+                if(!SDReport)
+                {
+                    showError(BUILT_IN_LED);
+                    //Try to restart the SD
+                    setupSD();
+                    currentState = IDLE;
+                    break;
+                }
+            #endif
             
             if(scanMode == "WF")
             {
-                WiFiSniffer();
+                #if ENABLE_WIFI
+                    WiFiSniffer();
+                    currentState = PROCESS;
+                    showSuccess(BUILT_IN_LED);
+                    break;
+                #else
+                    currentState = IDLE;
+                    break;
+                #endif
+
             } else if(scanMode == "BT") {
-                BTSniffer();
+                #if ENABLE_BT
+                    BTSniffer();
+                    currentState = PROCESS;
+                    showSuccess(BUILT_IN_LED);
+                    break;
+                #else
+                    currentState = IDLE;
+                    break;
+                #endif
             }
-
-            showSuccess(BUILT_IN_LED);
-
-            currentState = PROCESS;
-            break;
         }
         
         case PROCESS:
         {
-            Serial.println("Current FSM state: PROCESS");
+            DEBUG_PRINTLN("Current FSM state: PROCESS");
 
             if(scanMode == "WF")
             {
-                logWiFiData();
+                #if ENABLE_SD
+                    logWiFiData();
+                    currentState = IDLE;
+                    break;
+                #else
+                    currentState = IDLE;
+                    break;
+                #endif
             } else if (scanMode == "BT") {
-                logBTData();
+                #if ENABLE_SD
+                    logBTData();
+                    currentState = IDLE;
+                    break;
+                #else
+                    currentState = IDLE;
+                    break;
+                #endif
             }
 
             showProcessing(BUILT_IN_LED);
-
-            currentState = IDLE;
-            break;
         }
 
         case WEB_SERVER:
         {
-            Serial.println("Current FSM state: WEB_SERVER");
+            DEBUG_PRINTLN("Current FSM state: WEB_SERVER");
             
             if(serverStatus && scanMode == "WS")
             {

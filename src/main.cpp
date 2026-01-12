@@ -11,7 +11,7 @@
 void setup()
 {
     Serial.begin(115200);
-    Serial.println("Welcome to Noctua!");
+    DEBUG_PRINTLN("Welcome to Noctua!");
     setupFSM();
 }
 

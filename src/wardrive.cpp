@@ -34,8 +34,8 @@ bool startWardrive()
         if (encryptationType == WIFI_AUTH_OPEN)
         {
             String NetworkName = WiFi.SSID(n);
-            Serial.println("Open network found: ");
-            Serial.print(NetworkName);
+            DEBUG_PRINTLN("Open network found: ");
+            DEBUG_PRINT(NetworkName);
             openNetworkfound = true;
         }
     }

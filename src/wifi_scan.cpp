@@ -30,7 +30,7 @@ void WiFiSniffer()
         // Clean the data from "BTData" struct
         memset(&data, 0, sizeof(WiFiData));
 
-        Serial.printf("Collecting data from network %d...\n", i);
+        DEBUG_PRINTF("Collecting data from network %d...\n", i);
 
         // Gets the data w/o connecting to the network
         strncpy(data.ssid, WiFi.SSID(i).c_str(), sizeof(data.ssid));
@@ -46,23 +46,23 @@ void WiFiSniffer()
 
             // Starts the connection
             WiFi.begin(data.ssid);
-            Serial.print("Trying to connect");
+            DEBUG_PRINT("Trying to connect");
             wl_status_t WFStatus = WiFi.status();
 
             while (WFStatus != WL_CONNECTED)
             {
                 if (millis() - initTimer > CONN_TIMEOUT_MS)
                 {
-                    Serial.println("\nConnection timeout...");
+                    DEBUG_PRINT("\nConnection timeout...");
                     break;
                 }
                 delay(MID_DELAY);
-                Serial.print(".");
+                DEBUG_PRINT(".");
             }
 
             if (WFStatus == WL_CONNECTED)
             {
-                Serial.printf("\nSuccessfully connected on %s\n", data.ssid);
+                DEBUG_PRINTF("\nSuccessfully connected on %s\n", data.ssid);
 
                 // Gets the data of the network
                 strncpy(data.hostname, WiFi.getHostname(), sizeof(data.hostname));
@@ -81,7 +81,7 @@ void WiFiSniffer()
                 }
 
                 WiFi.disconnect();
-                Serial.printf("Data successfully collected. Disconnected from %s\n", data.ssid);
+                DEBUG_PRINTF("Data successfully collected. Disconnected from %s\n", data.ssid);
             }
         }
 
