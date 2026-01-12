@@ -7,7 +7,8 @@
 
 bool SDDoctor()
 {
-    if(SD.cardType() == CARD_NONE)
+    sdcard_type_t cardType = SD.cardType();
+    if(cardType == CARD_NONE)
     {
         Serial.println("Error: Card not found!");
         return false;

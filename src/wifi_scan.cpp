@@ -47,8 +47,9 @@ void WiFiSniffer()
             // Starts the connection
             WiFi.begin(data.ssid);
             Serial.print("Trying to connect");
+            wl_status_t WFStatus = WiFi.status();
 
-            while (WiFi.status() != WL_CONNECTED)
+            while (WFStatus != WL_CONNECTED)
             {
                 if (millis() - initTimer > CONN_TIMEOUT_MS)
                 {
@@ -59,7 +60,7 @@ void WiFiSniffer()
                 Serial.print(".");
             }
 
-            if (WiFi.status() == WL_CONNECTED)
+            if (WFStatus == WL_CONNECTED)
             {
                 Serial.printf("\nSuccessfully connected on %s\n", data.ssid);
 
@@ -70,14 +71,12 @@ void WiFiSniffer()
                 strncpy(data.subNetMask, WiFi.subnetMask().toString().c_str(), sizeof(data.subNetMask));
 
                 // Verifies if the DHCP is enabled
-                tcpip_adapter_dhcp_status_t status;
+                tcpip_adapter_dhcp_status_t DHCPStatus;
                 tcpip_adapter_dhcpc_get_status(TCPIP_ADAPTER_IF_STA, &status);
-                if (status == TCPIP_ADAPTER_DHCP_STARTED)
+                if (DHCPStatus == TCPIP_ADAPTER_DHCP_STARTED)
                 {
                     strcpy(data.dhcp, "DHCP status: Active");
-                }
-                else
-                {
+                } else {
                     strcpy(data.dhcp, "DHCP status: Static");
                 }
 

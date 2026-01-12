@@ -17,8 +17,9 @@ int session_id = 0;
 
 void setupSD()
 {
+    bool startSD = SD.begin(SD_CS_PIN)
     Serial.println("Starting the SD Card");
-    while (!SD.begin(SD_CS_PIN))
+    while (!startSD)
     {
         delay(MID_DELAY);
         Serial.print(".");
@@ -74,11 +75,10 @@ void logWiFiData()
                             receivedWiFiData.subNetMask);
             dataFile.close();
             Serial.printf("Sucessfully saved on %s\n", logWiFiData);
-        }
-        else
-        {
+        } else {
             Serial.printf("Error opening %s\n", WiFiFileName);
         }
+
         if(session_id > RAM_FLUSH_LIM)
         {
             Serial.println("RAM flush sucessfully done!");
@@ -106,11 +106,10 @@ void logBTData()
                             receivedBTData.channel);
             dataFile.close();
             Serial.println("Data sucessfully saved");
-        }
-        else
-        {
+        } else {
             Serial.printf("Error opening %s\n", BTFileName);
         }
+        
         if(session_id > RAM_FLUSH_LIM)
         {
             Serial.println("RAM flush sucessfully done!");

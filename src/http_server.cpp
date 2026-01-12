@@ -67,7 +67,8 @@ bool startServer()
 
 void handleDownload(WiFiClient& client, String path)
 {
-    if (SD.exists(path)) {
+    if (SD.exists(path))
+    {
         File dataFile = SD.open(path);
         client.println("HTTP/1.1 200 OK");
         client.println("Content-Type: application/octet-stream");
@@ -77,7 +78,8 @@ void handleDownload(WiFiClient& client, String path)
         client.println();
 
         uint8_t buffer[HND_BUFFER_SIZE];
-        while (dataFile.available()) {
+        while (dataFile.available())
+        {
             int bytesRead = dataFile.read(buffer, sizeof(buffer));
             client.write(buffer, bytesRead);
         }
@@ -98,7 +100,8 @@ void sendIndexSD(WiFiClient& client)
     File WFRoot = SD.open("/wifi_log_data/");
     File WFFile = WFRoot.openNextFile();
     
-    while (WFFile) {
+    while (WFFile)
+    {
         String WDLogName = WFFile.name();
         client.print("<li><a href=\"/wifi_log_data/");
         client.print(WDLogName);
@@ -118,7 +121,8 @@ void sendIndexSD(WiFiClient& client)
     File BTRoot = SD.open("/bluetooth_log_data/");
     File BTFile = BTRoot.openNextFile();
 
-    while (BTFile) {
+    while (BTFile)
+    {
         String BTLogName = BTFile.name();
         client.print("<li><a href=\"/bluetooth_log_data/");
         client.print(BTLogName);

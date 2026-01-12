@@ -56,7 +56,7 @@ void runFSM()
                 currentState = SCAN;
                 break;
             } else if(btnCPressed) {
-                scanMode = "WS"
+                scanMode = "WS";
                 currentState = WEB_SERVER;
                 break;
             }

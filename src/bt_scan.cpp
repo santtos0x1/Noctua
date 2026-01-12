@@ -24,9 +24,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         if (advertisedDevice.haveName())
         {
             strncpy(data.name, advertisedDevice.getName().c_str(), 32);
-        }
-        else
-        {
+        } else {
             strcpy(data.name, "Unknown");
         }
         strncpy(data.address, advertisedDevice.getAddress().toString().c_str(), 17);
