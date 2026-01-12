@@ -4,20 +4,17 @@
 
 // Libs
 #include <Arduino.h>
-#include <Arduino_UUID.h>
 #include <SD.h>
-
-String WiFiFileName;
-String BTFileName;
 
 WiFiData receivedWiFiData;
 BTData receivedBTData;
+WardriveData receivedWDData;
 
 int session_id = 0;
 
 void setupSD()
 {
-    bool startSD = SD.begin(SD_CS_PIN)
+    bool startSD = SD.begin(SD_CS_PIN);
     Serial.println("Starting the SD Card");
     while (!startSD)
     {
@@ -40,22 +37,23 @@ void setupSD()
 
     session_id++;
 
-    File wCounterData = SD.open("c_tr.txt", FILE_WRITE | O_TRUNC);
+    File wCounterData = SD.open("c_tr.txt", "w");
     if(wCounterData)
     {
         wCounterData.print(session_id);
-        wCounterData.close()
+        wCounterData.close();
     }
 }
 
-WiFiFileName = "/wifi_log_data/wf_" + (String)session_id + ".csv";
-BTFileName = "/bluetooth_log_data/bt_" + (String)session_id + ".csv";
+String WiFiFileName = "/wifi_log_data/wf_" + (String)session_id + ".csv";
+String BTFileName = "/bluetooth_log_data/bt_" + (String)session_id + ".csv";
+String WDFileName = "/wardrive_log_data/wd_" + (String)session_id + ".csv";
 
 void logWiFiData()
 {
     if (xQueueReceive(WiFiQueue, &receivedWiFiData, pdMS_TO_TICKS(100)))
     {
-        Serial.printf("Creating file: '%s'", WiFiFileName)
+        Serial.printf("Creating file: '%s'", WiFiFileName);
 
         File dataFile = SD.open(WiFiFileName);
 
@@ -108,6 +106,30 @@ void logBTData()
             Serial.println("Data sucessfully saved");
         } else {
             Serial.printf("Error opening %s\n", BTFileName);
+        }
+        
+        if(session_id > RAM_FLUSH_LIM)
+        {
+            Serial.println("RAM flush sucessfully done!");
+            dataFile.flush();
+        }
+    }
+}
+
+void logWDData()
+{
+    if (xQueueReceive(WDQueue, &receivedWDData, pdMS_TO_TICKS(100)))
+    {
+        File dataFile = SD.open(WDFileName);
+        Serial.printf("Creating file: '%s'.", WDFileName);
+        if(dataFile)
+        {
+            dataFile.println("SSID, RSSI");
+            dataFile.printf("%s, %d\n", receivedWDData.ssid, receivedWDData.rssi);
+            dataFile.close();
+            Serial.println("Data sucessfully saved");
+        } else {
+            Serial.printf("Error opening %s\n", WDFileName);
         }
         
         if(session_id > RAM_FLUSH_LIM)

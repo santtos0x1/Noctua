@@ -6,6 +6,7 @@
 #include "watchdog.h"
 #include "indicator.h"
 #include "http_server.h"
+#include "wardrive.h"
 
 // Libs
 #include <Arduino.h>
@@ -26,6 +27,7 @@ void setupFSM()
     setupSD();
     setupIndicator(BUILT_IN_LED);
     serverStatus = startServer();
+    setupWardrive();
 
     // Setting PINs
     pinMode(BTN_A_PINOUT, INPUT_PULLUP);
@@ -46,12 +48,30 @@ void runFSM()
     {
         case IDLE:
         {
-            Serial.println("Current FSM state: IDLE");
-
-            if(btnAPressed)
+            if(digitalRead(BTN_A_PINOUT) == LOW)
             {
-                scanMode = "WF";
-                currentState = SCAN;
+                delay(LOW_DELAY);
+                unsigned long gap = millis() + 400;
+                bool doubleClicked = false;
+
+                while(digitalRead(BTN_A_PINOUT) == LOW);
+
+                while(millis() < gap) {
+                    if (digitalRead(BTN_A_PINOUT) == LOW) {
+                        doubleClicked = true;
+                        break;
+                    }
+                }
+
+                if(doubleClicked)
+                {
+                    scanMode = "WD";
+                    currentState = WARDRIVE_MODE;
+                    showOn(BUILT_IN_LED);
+                } else {
+                    scanMode = "WF";
+                    currentState = SCAN;
+                }
                 break;
             } else if(btnBPressed) {
                 scanMode = "BT";
@@ -61,7 +81,7 @@ void runFSM()
                 scanMode = "WS";
                 currentState = WEB_SERVER;
                 break;
-            }
+            } 
         }
 
         case SCAN:
@@ -123,6 +143,12 @@ void runFSM()
 
             currentState = IDLE;
             break;
+        }
+
+        case WARDRIVE_MODE:
+        {
+            startWardrive();
+            logWDData();
         }
     }
 

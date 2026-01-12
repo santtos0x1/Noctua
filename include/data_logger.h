@@ -3,9 +3,11 @@
 
 #include "config.h"
 #include <Arduino.h>
+#include <SD.h>
 
-bool setupSD();
+void setupSD();
 void logWiFiData();
 void logBTData();
+void logWDData();
 
 #endif // !DATA_LOGGER_H

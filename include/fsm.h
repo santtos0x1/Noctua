@@ -8,7 +8,8 @@ enum State
     IDLE,
     SCAN,
     PROCESS,
-    WEB_SERVER
+    WEB_SERVER,
+    WARDRIVE_MODE
 };
 
 extern State currentState;

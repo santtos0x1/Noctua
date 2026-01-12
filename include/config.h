@@ -39,7 +39,7 @@ struct WiFiData
 {
   //Without connection
   char ssid[33];
-  int8_t rssi;
+  int32_t rssi;
   char bssid[20];
   uint8_t encryptationType;
   int channel;
@@ -60,8 +60,15 @@ struct BTData
     int channel;
 };
 
+struct WardriveData
+{
+  char ssid[33];
+  int32_t rssi;
+};
+
 extern QueueHandle_t WiFiQueue;
 extern QueueHandle_t BTQueue;
+extern QueueHandle_t WDQueue;
 // === === === ===
 
 #endif // !CONFIG_H

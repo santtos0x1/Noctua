@@ -36,3 +36,13 @@ void showError(int ledPinout)
     delay(HIGH_DELAY);
     digitalWrite(ledPinout, LOW); 
 }
+
+void showOn(int ledPinout)
+{
+    digitalWrite(ledPinout, HIGH); 
+}
+
+void showOff(int ledPinout)
+{
+    digitalWrite(ledPinout, LOW); 
+}
