@@ -10,11 +10,6 @@
 // Libs
 #include <Arduino.h>
 
-#define BTN_A_PINOUT 14
-#define BTN_B_PINOUT 16
-#define BTN_C_PINOUT 18
-#define BUILT_IN_LED 2
-
 bool btnALastState = HIGH;
 bool btnBLastState = HIGH;
 bool btnCLastState = HIGH;

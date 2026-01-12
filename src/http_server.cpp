@@ -1,5 +1,6 @@
 // Local libs
 #include "http_server.h"
+#include "config.h"
 
 // Libs
 #include <Arduino.h>
@@ -7,15 +8,16 @@
 #include <SPI.h>
 #include <WiFi.h>   
 
-WiFiServer server(80);
+WiFiServer server(WEB_SERVER_PORT);
 
 const char* ssid = "";
 const char* pass = "";
+const bool manualWiFiConnection = false;
 
 bool startServer() 
 {
     WiFi.disconnect();
-    delay(100);
+    delay(LOW_DELAY);
 
     // Starts the scan
     int networks = WiFi.scanNetworks();
@@ -26,7 +28,7 @@ bool startServer()
         {
             Serial.printf("Trying to connect to %s\n", WiFi.SSID(i));
             
-            if(ssid == "")
+            if(!manualWiFiConnection)
             {
                 WiFi.begin(WiFi.SSID(i).c_str());
             } else {
@@ -34,9 +36,9 @@ bool startServer()
             }
 
             int attempts = 0;
-            while (WiFi.status() != WL_CONNECTED && attempts < 20) 
+            while (WiFi.status() != WL_CONNECTED && attempts < SERVER_ATTEMPTS_LIMIT) 
             {
-                delay(500);
+                delay(MID_DELAY);
                 Serial.print(".");
                 attempts++;
             }
@@ -74,7 +76,7 @@ void handleDownload(WiFiClient& client, String path)
         client.println("Connection: close");
         client.println();
 
-        uint8_t buffer[512];
+        uint8_t buffer[HND_BUFFER_SIZE];
         while (dataFile.available()) {
             int bytesRead = dataFile.read(buffer, sizeof(buffer));
             client.write(buffer, bytesRead);
@@ -152,7 +154,7 @@ void serverCFG()
             handleDownload(client, fileName);
         }
 
-        delay(1);
+        delay(LOW_DELAY);
         client.stop();
     }
 }

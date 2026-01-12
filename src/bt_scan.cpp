@@ -8,8 +8,6 @@
 #include <BLEAdvertisedDevice.h>
 #include <Arduino.h>
 
-#define scanTime 5
-
 QueueHandle_t BTQueue;
 BLEScan *pBLEscan;
 

@@ -7,8 +7,6 @@
 #include <Arduino_UUID.h>
 #include <SD.h>
 
-#define RAM_FLUSH_LIM 5
-
 String WiFiFileName;
 String BTFileName;
 
@@ -20,9 +18,9 @@ int session_id = 0;
 void setupSD()
 {
     Serial.println("Starting the SD Card");
-    while (!SD.begin(5))
+    while (!SD.begin(SD_CS_PIN))
     {
-        delay(500);
+        delay(MID_DELAY);
         Serial.print(".");
     }
 
