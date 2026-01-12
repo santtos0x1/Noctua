@@ -70,6 +70,8 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 ---
 
+![SCHM](/docs/schematics.png)
+
 ## Componentes Necessários
 
 - **1x ESP32 NodeMCU** – microcontrolador principal  
