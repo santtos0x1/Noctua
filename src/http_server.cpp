@@ -37,14 +37,16 @@ bool startServer()
             }
 
             int attempts = 0;
-            while (WiFi.status() != WL_CONNECTED && attempts < SERVER_ATTEMPTS_LIMIT) 
+            wl_status_t connStatus = WiFi.status();
+
+            while (connStatus != WL_CONNECTED && attempts < SERVER_ATTEMPTS_LIMIT) 
             {
                 delay(MID_DELAY);
                 Serial.print(".");
                 attempts++;
             }
 
-            if(WiFi.status() == WL_CONNECTED)
+            if(connStatus == WL_CONNECTED)
             {
                 Serial.println("Connection estabilished!");
                 break;
@@ -53,7 +55,9 @@ bool startServer()
             }
         }
     }
-    if(WiFi.status() == WL_CONNECTED)
+
+    wl_status_t status = WiFi.status();
+    if(status == WL_CONNECTED)
     {
         server.begin();
         Serial.println("HTTP Server started!");
@@ -71,6 +75,7 @@ void handleDownload(WiFiClient& client, String path)
     if (SD.exists(path))
     {
         File dataFile = SD.open(path);
+        // HEAD
         client.println("HTTP/1.1 200 OK");
         client.println("Content-Type: application/octet-stream");
         client.print("Content-Length: ");

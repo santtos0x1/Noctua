@@ -21,14 +21,16 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         memset(&data, 0, sizeof(BTData));
         
         // Gets the data w/o connecting to the device
-        if (advertisedDevice.haveName())
+        bool haveName =  advertisedDevice.haveName();
+        if (haveName)
         {
-            strncpy(data.name, advertisedDevice.getName().c_str(), 32);
+            strncpy(data.name, advertisedDevice.getName().c_str(), sizeof(data.name));
         } else {
             strcpy(data.name, "Unknown");
         }
-        strncpy(data.address, advertisedDevice.getAddress().toString().c_str(), 17);
+        strncpy(data.address, advertisedDevice.getAddress().toString().c_str(), sizeof(data.address));
         data.rssi = advertisedDevice.getRSSI();
+
         esp_ble_addr_type_t type = advertisedDevice.getAddressType();
         switch (type)
         {
@@ -48,6 +50,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
             strcpy(data.addressType, "Unknown");
             break;
         }
+        
         data.channel = 0;
 
         // Send to the queue
