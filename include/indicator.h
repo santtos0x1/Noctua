@@ -8,5 +8,4 @@ void showProcessing(int ledPinout);
 void showSuccess(int ledPinout);
 void showError(int ledPinout);
 
-
 #endif // !INDICATOR_H
