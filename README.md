@@ -70,7 +70,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 
 ---
 
-![SCM](/docs/schematics.png)
+![SCM](/docs/schematics1.png)
 
 ## Componentes Necessários
 
