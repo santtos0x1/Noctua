@@ -65,7 +65,7 @@ void runFSM()
         case SCAN:
             Serial.println("Current FSM state: SCAN");
 
-            bool SDReport = SDDoctor()
+            bool SDReport = SDDoctor();
 
             if(!SDReport)
             {

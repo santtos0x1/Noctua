@@ -24,7 +24,8 @@ bool startServer()
 
     for (int i = 0; i < networks; i++)
     {
-        if(WiFi.encryptionType(i) == WIFI_AUTH_OPEN)
+        wifi_auth_mode_t encryptationType = WiFi.encryptionType(i)
+        if(encryptationType == WIFI_AUTH_OPEN)
         {
             Serial.printf("Trying to connect to %s\n", WiFi.SSID(i));
             
@@ -91,12 +92,14 @@ void handleDownload(WiFiClient& client, String path)
 
 void sendIndexSD(WiFiClient& client)
 {
+    // HEAD
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html; charset=utf-8");
     client.println();
-    client.println("<h1>WiFi logs folder - SD files</h1>");
-    client.println("<ul>");
 
+    // WiFi files section
+    client.println("<h1>WiFi logs folder - SD files</h1><br>");
+    client.println("<ul>");
     File WFRoot = SD.open("/wifi_log_data/");
     File WFFile = WFRoot.openNextFile();
     
@@ -114,8 +117,9 @@ void sendIndexSD(WiFiClient& client)
     client.println("</ul>");
 
     WFRoot.close();
-
-    client.println("<h1>Bluetooth logs folder - SD files</h1>");
+    
+    // Bluetooth files section
+    client.println("<h1>Bluetooth logs folder - SD files</h1><br>");
     client.println("<ul>");
 
     File BTRoot = SD.open("/bluetooth_log_data/");
