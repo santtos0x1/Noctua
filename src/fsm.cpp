@@ -30,6 +30,7 @@ void setupFSM()
     // Setting PINs
     pinMode(BTN_A_PINOUT, INPUT_PULLUP);
     pinMode(BTN_B_PINOUT, INPUT_PULLUP);
+    pinMode(BTN_C_PINOUT, INPUT_PULLUP);
 
     // Start state
     currentState = IDLE;
@@ -107,7 +108,7 @@ void runFSM()
         case WEB_SERVER:
             Serial.println("Current FSM state: WEB_SERVER");
             
-            if(serverStatus)
+            if(serverStatus && scanMode == "WS")
             {
                 showSuccess(BUILT_IN_LED);
                 serverCFG();
