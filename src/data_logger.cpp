@@ -74,7 +74,7 @@ void logWiFiData()
                             receivedWiFiData.dnsIP,
                             receivedWiFiData.subNetMask);
             dataFile.close();
-            Serial.printf("Sucessfully saved on %s\n", logWiFiData);
+            Serial.printf("Sucessfully saved on %s\n", WiFiFileName);
         } else {
             Serial.printf("Error opening %s\n", WiFiFileName);
         }
