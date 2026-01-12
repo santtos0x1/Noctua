@@ -107,7 +107,7 @@ Inspirado na coruja, o Noctua observa silenciosamente, registra informações e 
 4. **WEB_SERVER**
    - Inicio do Servidor HTTP
 
-![Cycle](operational_cycle.png)
+![Cycle](/docs/operational_cycle.png)
 
 > A FSM é simples de propósito. Clareza > complexidade desnecessária.
 
