@@ -45,6 +45,7 @@ void runFSM()
     switch(currentState)
     {
         case IDLE:
+        {
             Serial.println("Current FSM state: IDLE");
 
             if(btnAPressed)
@@ -61,8 +62,10 @@ void runFSM()
                 currentState = WEB_SERVER;
                 break;
             }
+        }
 
         case SCAN:
+        {
             Serial.println("Current FSM state: SCAN");
 
             bool SDReport = SDDoctor();
@@ -87,8 +90,10 @@ void runFSM()
 
             currentState = PROCESS;
             break;
+        }
         
         case PROCESS:
+        {
             Serial.println("Current FSM state: PROCESS");
 
             if(scanMode == "WF")
@@ -102,8 +107,10 @@ void runFSM()
 
             currentState = IDLE;
             break;
+        }
 
         case WEB_SERVER:
+        {
             Serial.println("Current FSM state: WEB_SERVER");
             
             if(serverStatus && scanMode == "WS")
@@ -116,6 +123,7 @@ void runFSM()
 
             currentState = IDLE;
             break;
+        }
     }
 
     btnALastState = digitalRead(BTN_A_PINOUT);

@@ -24,7 +24,7 @@ bool startServer()
 
     for (int i = 0; i < networks; i++)
     {
-        wifi_auth_mode_t encryptationType = WiFi.encryptionType(i)
+        wifi_auth_mode_t encryptationType = WiFi.encryptionType(i);
         if(encryptationType == WIFI_AUTH_OPEN)
         {
             Serial.printf("Trying to connect to %s\n", WiFi.SSID(i));

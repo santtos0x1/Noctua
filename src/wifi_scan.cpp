@@ -72,7 +72,7 @@ void WiFiSniffer()
 
                 // Verifies if the DHCP is enabled
                 tcpip_adapter_dhcp_status_t DHCPStatus;
-                tcpip_adapter_dhcpc_get_status(TCPIP_ADAPTER_IF_STA, &status);
+                tcpip_adapter_dhcpc_get_status(TCPIP_ADAPTER_IF_STA, &DHCPStatus);
                 if (DHCPStatus == TCPIP_ADAPTER_DHCP_STARTED)
                 {
                     strcpy(data.dhcp, "DHCP status: Active");
