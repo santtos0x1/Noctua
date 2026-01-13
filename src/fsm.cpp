@@ -12,17 +12,24 @@
 // Libs
 #include <Arduino.h>
 
+// Edge detection variables for physical buttons (Debouncing)
 bool btnALastState = HIGH;
 bool btnBLastState = HIGH;
 bool btnCLastState = HIGH;
 
+// Operational flag to define the current scanning technology (WiFi, BT, or Wardrive)
 String scanMode;
 
+// Status flag for the asynchronous HTTP service
 bool serverStatus = false;
 
+/**
+ * Bootstraps the FSM and initializes all modular subsystems 
+ * based on the global build configuration.
+ */
 void setupFSM()
 {
-    // Initing modules
+    // Conditional initialization of hardware modules
     #if ENABLE_WIFI
         setupWiFi();
     #endif
@@ -32,36 +39,50 @@ void setupFSM()
     #if ENABLE_SD
         setupSD();
     #endif    
+    
+    // Core services and UI feedback initialization
     setupIndicator(Pins::BUILT_IN_LED);
-    serverStatus = startServer();
+    serverStatus = startServer(); // Initialize the data access portal
     setupWardrive();
 
-    // Setting PINs
+    // Hardware Input configuration with internal pull-up resistors
     pinMode(Pins::BTN_A, INPUT_PULLUP);
-    pinMode(Pins::BTN_A, INPUT_PULLUP);
+    pinMode(Pins::BTN_B, INPUT_PULLUP); 
     pinMode(Pins::BTN_C, INPUT_PULLUP);
 
-    // Start state
+    // Initial state assignment
     currentState = IDLE;
 }
 
+/**
+ * Main FSM Execution Loop: Manages state transitions, 
+ * asynchronous scanning, and user input handling.
+ */
 void runFSM()
 {
+    // Capture instantaneous button states for transition triggers
     bool btnAPressed = (digitalRead(Pins::BTN_A) == LOW && btnALastState == HIGH);
     bool btnBPressed = (digitalRead(Pins::BTN_B) == LOW && btnBLastState == HIGH);
     bool btnCPressed = (digitalRead(Pins::BTN_C) == LOW && btnCLastState == HIGH);
 
     switch(currentState)
     {
+        /* IDLE STATE:
+           Monitoring user input to select operational mode.
+           - Button A: Single Click (WiFi Scan) / Double Click (Wardrive)
+           - Button B: Bluetooth Scan
+           - Button C: Web Server Mode
+        */
         case IDLE:
         {
             if(digitalRead(Pins::BTN_A) == LOW)
             {
+                // Double-click detection logic for mode switching
                 delay(Time::LOW_DELAY);
-                unsigned long gap = millis() + 400;
+                unsigned long gap = millis() + 400; // 400ms detection window
                 bool doubleClicked = false;
 
-                while(digitalRead(Pins::BTN_A) == LOW);
+                while(digitalRead(Pins::BTN_A) == LOW); // Wait for release of first click
 
                 while(millis() < gap) {
                     if (digitalRead(Pins::BTN_A) == LOW) {
@@ -72,35 +93,41 @@ void runFSM()
 
                 if(doubleClicked)
                 {
-                    scanMode = "WD";
+                    scanMode = "WD"; // Enter Wardriving mode (Signal)
                     currentState = WARDRIVE_MODE;
                     showOn(Pins::BUILT_IN_LED);
                 } else {
-                    scanMode = "WF";
+                    scanMode = "WF"; // Enter standard WiFi Sniffer mode
                     currentState = SCAN;
                 }
                 break;
             } else if(btnBPressed) {
-                scanMode = "BT";
+                scanMode = "BT"; // Enter Bluetooth Sniffer mode
                 currentState = SCAN;
                 break;
             } else if(btnCPressed) {
-                scanMode = "WS";
+                scanMode = "WS"; // Enter Web server mode
                 currentState = WEB_SERVER;
                 break;
             } 
+            break;
         }
 
+        /* SCAN STATE:
+           Executes the sniffing routine based on the active scanMode.
+           Includes data integrity checks for the SD card.
+        */
         case SCAN:
         {
             DEBUG_PRINTLN("Current FSM state: SCAN");
+            
             #if ENABLE_SD
+                // Verify storage health before attempting to write
                 bool SDReport = SDDoctor();            
                 if(!SDReport)
                 {
                     showError(Pins::BUILT_IN_LED);
-                    //Try to restart the SD
-                    setupSD();
+                    setupSD(); // Attempt hardware re-initialization
                     currentState = IDLE;
                     break;
                 }
@@ -109,28 +136,30 @@ void runFSM()
             if(scanMode == "WF")
             {
                 #if ENABLE_WIFI
-                    WiFiSniffer();
+                    WiFiSniffer(); // Start 802.11 packet capture
                     currentState = PROCESS;
                     showSuccess(Pins::BUILT_IN_LED);
-                    break;
                 #else
                     currentState = IDLE;
-                    break;
                 #endif
-
+                break;
             } else if(scanMode == "BT") {
                 #if ENABLE_BT
-                    BTSniffer();
+                    BTSniffer(); // Start BLE advertising discovery
                     currentState = PROCESS;
                     showSuccess(Pins::BUILT_IN_LED);
-                    break;
                 #else
                     currentState = IDLE;
-                    break;
                 #endif
+                break;
             }
+            break;
         }
         
+        /* PROCESS STATE:
+           Handles the offloading of captured data from RTOS queues 
+           to the persistent storage (SD Card).
+        */
         case PROCESS:
         {
             DEBUG_PRINTLN("Current FSM state: PROCESS");
@@ -138,27 +167,25 @@ void runFSM()
             if(scanMode == "WF")
             {
                 #if ENABLE_SD
-                    logWiFiData();
-                    currentState = IDLE;
-                    break;
-                #else
-                    currentState = IDLE;
-                    break;
+                    logWiFiData(); // Flush WiFi queue to CSV
                 #endif
+                currentState = IDLE;
+                break;
             } else if (scanMode == "BT") {
                 #if ENABLE_SD
-                    logBTData();
-                    currentState = IDLE;
-                    break;
-                #else
-                    currentState = IDLE;
-                    break;
+                    logBTData(); // Flush Bluetooth queue to CSV
                 #endif
+                currentState = IDLE;
+                break;
             }
 
             showProcessing(Pins::BUILT_IN_LED);
+            break;
         }
 
+        /* WEB_SERVER STATE:
+           Enables the Access Point and HTTP server for file exfiltration.
+        */
         case WEB_SERVER:
         {
             DEBUG_PRINTLN("Current FSM state: WEB_SERVER");
@@ -166,7 +193,9 @@ void runFSM()
             if(serverStatus && scanMode == "WS")
             {
                 showSuccess(Pins::BUILT_IN_LED);
-                serverCFG();
+                serverCFG(); // Maintain server runtime configurations and connections
+                
+                // Exit condition for Server Mode
                 if(btnBPressed)
                 {
                     showError(Pins::BUILT_IN_LED);
@@ -178,22 +207,27 @@ void runFSM()
                 currentState = IDLE;
                 break;
             }
-
-            
+            break;
         }
 
+        /* WARDRIVE_MODE:
+           Continuous capture mode combining WiFi signal strength 
+           with concurrent data logging.
+        */
         case WARDRIVE_MODE:
         {
-            if(btnBPressed)
+            if(btnBPressed) // Exit trigger for continuous scanning
             {
                 currentState = IDLE;
                 break;
             }
             startWardrive();
             logWDData();
+            break;
         }
     }
 
+    // Update edge detection buffers for the next cycle
     btnALastState = digitalRead(Pins::BTN_A);
     btnBLastState = digitalRead(Pins::BTN_B);
     btnCLastState = digitalRead(Pins::BTN_C);
