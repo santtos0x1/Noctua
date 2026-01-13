@@ -34,7 +34,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         strncpy(data.address, advertisedDevice.getAddress().toString().c_str(), sizeof(data.address));
         DEBUG_PRINTLN("Getting device RSSI...");
         data.rssi = advertisedDevice.getRSSI();
-        DEBUG_PRINTLN("Getting device adress type...")
+        DEBUG_PRINTLN("Getting device adress type...");
         esp_ble_addr_type_t type = advertisedDevice.getAddressType();
         switch (type)
         {
@@ -57,7 +57,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         DEBUG_PRINTLN("Defining channel...");
         data.channel = 0;
 
-        DEBUG_PRINTLN("Sending to the queue...")
+        DEBUG_PRINTLN("Sending to the queue...");
         // Send to the queue
         xQueueSend(BTQueue, &data, pdMS_TO_TICKS(10));
     }
@@ -65,11 +65,11 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
 
 void setupBT()
 {
-    DEBUG_PRINTLN("Creating the queue...")
+    DEBUG_PRINTLN("Creating the queue...");
     // Create the queue
     BTQueue = xQueueCreate(20, sizeof(BTData));
 
-    DEBUG_PRINTLN("Starting bluetooth modules...")
+    DEBUG_PRINTLN("Starting bluetooth modules...");
     BLEDevice::init("");
     BLEScan *pBLEScan = BLEDevice::getScan();
 
