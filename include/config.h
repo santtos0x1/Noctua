@@ -50,11 +50,11 @@
  */
 namespace Pins 
 {
-  inline constexpr uint8_t BTN_A        = 14;
-  inline constexpr uint8_t BTN_B        = 16;
-  inline constexpr uint8_t BTN_C        = 18;
-  inline constexpr uint8_t BUILT_IN_LED = 2;
-  inline constexpr uint8_t SD_CS        = 5;
+  static constexpr uint8_t BTN_A        = 14;
+  static constexpr uint8_t BTN_B        = 16;
+  static constexpr uint8_t BTN_C        = 18;
+  static constexpr uint8_t BUILT_IN_LED = 2;
+  static constexpr uint8_t SD_CS        = 5;
 }
 
 /* * =================================================================
@@ -62,12 +62,12 @@ namespace Pins
  * =================================================================
  */
 namespace Time {
-  inline constexpr uint16_t LOW_DELAY  = 100;
-  inline constexpr uint16_t LMID_DELAY = 300;
-  inline constexpr uint16_t MID_DELAY  = 500;
-  inline constexpr uint16_t HMID_DELAY = 1000;
-  inline constexpr uint16_t HIGH_DELAY = 2000;
-  inline constexpr uint16_t IDLE_DELAY = 3000;
+  static constexpr uint16_t LOW_DELAY  = 100;
+  static constexpr uint16_t LMID_DELAY = 300;
+  static constexpr uint16_t MID_DELAY  = 500;
+  static constexpr uint16_t HMID_DELAY = 1000;
+  static constexpr uint16_t HIGH_DELAY = 2000;
+  static constexpr uint16_t IDLE_DELAY = 3000;
 }
 
 /* * =================================================================
@@ -78,7 +78,7 @@ struct WiFiData
 {
   // Passive Scanning
   char    ssid[33];
-  int32_t rssi;
+  int8_t rssi;
   char    bssid[20];
   uint8_t encryptionType;
   int     channel;

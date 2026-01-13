@@ -67,7 +67,7 @@ void logWiFiData()
                             receivedWiFiData.channel,
                             receivedWiFiData.localIP,
                             receivedWiFiData.dhcp,
-                            receivedWiFiData.encryptationType,
+                            receivedWiFiData.encryptionType,
                             receivedWiFiData.hostname,
                             receivedWiFiData.dnsIP,
                             receivedWiFiData.subNetMask);

@@ -183,6 +183,6 @@ void runFSM()
     }
 
     btnALastState = digitalRead(Pins::BTN_A);
-    btnBLastState = digitalRead(BTN_B_PINOUT);
-    btnCLastState = digitalRead(BTN_C_PINOUT);
+    btnBLastState = digitalRead(Pins::BTN_B);
+    btnCLastState = digitalRead(Pins::BTN_C);
 }
