@@ -6,7 +6,6 @@
 #include <BLEDevice.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
-#include <Arduino.h>
 
 QueueHandle_t BTQueue;
 BLEScan *pBLEscan;
