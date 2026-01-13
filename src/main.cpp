@@ -1,9 +1,9 @@
 // Local libs
-#include "config.h"
-#include "fsm.h"
+#include "data_logger.h"
 #include "wifi_scan.h"
 #include "bt_scan.h"
-#include "data_logger.h"
+#include "config.h"
+#include "fsm.h"
 
 // Libs
 #include <Arduino.h>

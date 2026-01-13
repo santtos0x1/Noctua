@@ -3,9 +3,10 @@
 #include "config.h"
 
 // Libs
-#include <WiFi.h>
 #include <esp_wifi.h>
 #include <Arduino.h>
+#include <WiFi.h>
+
 
 QueueHandle_t WiFiQueue;
 

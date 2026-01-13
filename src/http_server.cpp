@@ -4,9 +4,11 @@
 
 // Libs
 #include <Arduino.h>
-#include <SD.h>
-#include <SPI.h>
 #include <WiFi.h>   
+#include <SPI.h>
+#include <SD.h>
+
+
 
 WiFiServer server(WEB_SERVER_PORT);
 

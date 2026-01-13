@@ -1,7 +1,7 @@
 // Local libs
+#include "indicator.h"
 #include "wardrive.h"
 #include "config.h"
-#include "indicator.h"
 
 // Libs
 #include <Arduino.h>
