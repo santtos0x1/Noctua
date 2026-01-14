@@ -93,11 +93,11 @@ struct WiFiData
 
 struct BTData
 {
-    char  name[33];
-    char  address[18];
-    int   rssi;        
-    char  addressType[20];
-    int   channel;
+  char  name[33];
+  char  address[18];
+  int   rssi;        
+  char  addressType[20];
+  int   channel;
 };
 
 struct WardriveData
