@@ -6,16 +6,26 @@
 #include <Arduino.h>
 #include <SD.h>
 
+/**
+ * Performs a hardware integrity check on the SD Card.
+ * Validates if the media is physically present and responding.
+ * Returns true if the card is ready for I/O operations.
+ */
 bool SDDoctor()
 {
-    DEBUG_PRINTLN("Starting diagnostic...");
-    DEBUG_PRINTLN("Getting card type");
+    DEBUG_PRINTLN("Starting SD diagnostic...");
+    
+    // Retrieves the physical interface type (e.g., SDSC, SDHC, MMC)
+    DEBUG_PRINTLN("Probing card hardware...");
     sdcard_type_t cardType = SD.cardType();
+
+    // Verification: If cardType is 0 (CARD_NONE), communication failed
     if(cardType == CARD_NONE)
     {
-        DEBUG_PRINTLN("Error: Card not found!");
+        DEBUG_PRINTLN("Critical Error: SD Card not detected!");
         return false;
     }
-    DEBUG_PRINTLN("Status: Healthy");
+
+    DEBUG_PRINTLN("SD Status: Healthy and Mounted.");
     return true;
 }

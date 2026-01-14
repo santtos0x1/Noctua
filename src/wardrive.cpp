@@ -8,9 +8,11 @@
 #include <WiFi.h>
 
 QueueHandle_t WDQueue;
-
 bool openNetworkfound = false;
 
+/**
+ * Initializes the FreeRTOS queue to handle Wardriving data packets.
+ */
 void setupWardrive()
 {
     DEBUG_PRINTLN("Creating wardrive queue...");
@@ -18,43 +20,44 @@ void setupWardrive()
     DEBUG_PRINTLN("Done!");
 }
 
+/**
+ * Scans for networks, populates the data struct, and pushes to the Queue.
+ * Returns true if an Open Network (No Auth) is detected during the scan.
+ */
 bool startWardrive()
 {
     DEBUG_PRINTLN("Starting network scan...");
+    
+    // Synchronous scan (blocks execution until finished)
     int networks = WiFi.scanNetworks();
 
     for(int n = 0; n < networks; n++) {
         WardriveData data;
 
-        DEBUG_PRINTLN("Getting encryption type from the network...");
-        wifi_auth_mode_t encryptationType = WiFi.encryptionType(n);
+        DEBUG_PRINTLN("Getting encryption type...");
+        wifi_auth_mode_t encryptionType = WiFi.encryptionType(n);
 
-        DEBUG_PRINTLN("Getting SSID...");
+        DEBUG_PRINTLN("Getting SSID & RSSI...");
         strncpy(data.ssid, WiFi.SSID(n).c_str(), sizeof(data.ssid));
-        DEBUG_PRINTF("SSID: %s\n", WiFi.SSID(n).c_str());
-
-        DEBUG_PRINTLN("Getting RSSI...");
         data.rssi = WiFi.RSSI(n);
-        DEBUG_PRINTF("RSSI: %d", WiFi.RSSI(n));
 
-        // Send to the queue
-        DEBUG_PRINTLN("Sending data to queue...");
+        // Debug output
+        DEBUG_PRINTF("SSID: %s | RSSI: %d\n", data.ssid, data.rssi);
+
+        // Push data to the queue with a 10ms timeout
         xQueueSend(WDQueue, &data, pdMS_TO_TICKS(10));
-        DEBUG_PRINTLN("Done!");
 
-        if (encryptationType == WIFI_AUTH_OPEN)
+        if (encryptionType == WIFI_AUTH_OPEN)
         {
-            String NetworkName = WiFi.SSID(n);
-
-            DEBUG_PRINTLN("Open network found: ");
-            DEBUG_PRINT(NetworkName);
-
+            DEBUG_PRINTLN("Open network found!");
             openNetworkfound = true;
         }
     }
-    DEBUG_PRINTLN("Deleting scan from the memory...");
+
+    /* Crucial: Clears the scan results from RAM. 
+       Without this, the ESP32 heap will crash after a few scans. */
+    DEBUG_PRINTLN("Cleaning scan memory...");
     WiFi.scanDelete();
-    DEBUG_PRINTLN("Done!");
     
     return openNetworkfound;
 }

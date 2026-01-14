@@ -193,7 +193,7 @@ void runFSM()
             if(serverStatus && scanMode == "WS")
             {
                 showSuccess(Pins::BUILT_IN_LED);
-                serverCFG(); // Maintain server runtime configurations and connections
+                serverRun(); // Maintain server runtime configurations and connections
                 
                 // Exit condition for Server Mode
                 if(btnBPressed)
