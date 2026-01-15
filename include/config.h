@@ -89,6 +89,7 @@ struct WiFiData
   char    subNetMask[16];
   char    localIP[16];
   char    dhcp[20];
+  char    dbmQuality[8];
 };
 
 struct BTData

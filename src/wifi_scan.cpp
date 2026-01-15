@@ -39,12 +39,25 @@ void WiFiSniffer()
         // Passive Data Collection (SSID, RSSI, BSSID, Channel)
         strncpy(data.ssid, WiFi.SSID(i).c_str(), sizeof(data.ssid));
         data.rssi = WiFi.RSSI(i);
+        if(data.rssi >= -50)
+        {
+            strcpy(data.dbmQuality, "Strong", sizeof(data.dbmQuality));
+        } else if (data.rssi >= -70)
+        {
+            strcpy(data.dbmQuality, "Medium", sizeof(data.dbmQuality));
+        } else if (data.rssi >= -85)
+        {
+            strcpy(data.dbmQuality, "Weak", sizeof(data.dbmQuality));
+        }
+
         strncpy(data.bssid, WiFi.BSSIDstr(i).c_str(), sizeof(data.bssid));
         data.encryptionType = WiFi.encryptionType(i);
         data.channel = WiFi.channel(i);
 
-        // Active Probing: Only attempts connection on Unsecured (Open) networks
-        if (data.encryptionType == WIFI_AUTH_OPEN)
+        /* Active Probing: Only attempts connection on Unsecured (Open) networks and with,
+            an Ok quallity to stay connected.
+        */
+        if (data.encryptionType == WIFI_AUTH_OPEN and data.rssi >= -75)
         {
             unsigned long initTimer = millis();
             WiFi.begin(data.ssid);
