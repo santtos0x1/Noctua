@@ -44,6 +44,9 @@ void configCheck()
     #endif
 
     DEBUG_PRINTF(" > Internal RAM:    %d KB Free\n", ESP.getFreeHeap() / 1024);
-    
+    DEBUG_PRINTF(" > CPU Frequency: %d\n", ESP.getCpuFreqMHz());
+    DEBUG_PRINTF(" > Microcontroller SDK Version: %s\n", ESP.getSdkVersion());
+    DEBUG_PRINTF(" > Chip model: %s\n", ESP.getChipModel());
+
     DEBUG_PRINTLN("-----------------------------------------------");
 }
