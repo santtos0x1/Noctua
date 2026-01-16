@@ -1,5 +1,6 @@
 // Local libs
 #include "config.h"
+#include "bluetooth_scan.h"
 
 // Libs
 #include <BLEAdvertisedDevice.h>
@@ -82,7 +83,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     }
 };
 
-void setupBT()
+void setupBluetooth()
 {
     /*
         Initializes the queue, defining the maximum number of items (50) 
@@ -105,7 +106,7 @@ void setupBT()
     pBLEscan->setWindow(99);    // Set the scanning window (actual time spent scanning).
 }
 
-void BTSniffer()
+void BluetoothSniffer()
 {
     DEBUG_PRINTLN("Starting bluetooth scan...");
     pBLEscan->start(SCAN_TIME, false);

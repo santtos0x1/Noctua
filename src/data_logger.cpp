@@ -101,14 +101,14 @@ void setupSD()
             // Non-blocking check for Bluetooth Queue
             if (xQueueReceive(BTQueue, &btData, 0) == pdPASS) {
                  DEBUG_PRINTLN("Receiving data from the Bluetooth queue...");
-                 processBTLog(btData);
+                 processBluetoothLog(btData);
                  DEBUG_PRINTLN("Done!");
             }
 
             // Non-blocking check for Wardrive Queue
             if (xQueueReceive(WDQueue, &wdData, 0) == pdPASS) {
                  DEBUG_PRINTLN("Receiving data from the Wardrive queue...");
-                 processWDLog(wdData);
+                 processWardriveLog(wdData);
                  DEBUG_PRINTLN("Done!");
             }
 
@@ -191,7 +191,7 @@ void processWiFiLog(WiFiData data)
 /**
  * Appends Bluetooth data to the SD card.
  */
-void processBTLog(BTData data)
+void processBluetoothLog(BTData data)
 {
     String BTFileName = BTFolderSDPath + "/bt_" + String(session_id) + ".csv";
     
@@ -223,7 +223,7 @@ void processBTLog(BTData data)
 /**
  * Appends Wardrive data to the SD card.
  */
-void processWDLog(WardriveData data)
+void processWardriveLog(WardriveData data)
 {
     String WDFileName = WDFolderSDPath + "/wd_" + String(session_id) + ".csv";
     

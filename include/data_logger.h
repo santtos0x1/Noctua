@@ -5,7 +5,7 @@
 
 void setupSD();
 void processWiFiLog(WiFiData data);
-void processBTLog(BTData data);
+void processBluetoothLog(BTData data);
 void processWDLog(WardriveData data);
 
 void logSDTask(void * pvParameters);

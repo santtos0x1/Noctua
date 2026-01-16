@@ -11,7 +11,7 @@
  * Validates if the media is physically present and responding.
  * Returns true if the card is ready for I/O operations.
  */
-bool SDDoctor()
+bool SdHealthyChecker()
 {
     DEBUG_PRINTLN("Starting SD diagnostic...");
     

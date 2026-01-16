@@ -34,7 +34,7 @@ void setupFSM()
         setupWiFi();
     #endif
     #if ENABLE_BT
-        setupBT();
+        setupBluetooth();
     #endif    
     #if ENABLE_SD
         setupSD();
@@ -123,8 +123,8 @@ void runFSM()
             
             #if ENABLE_SD
                 // Verify storage health before attempting to write
-                bool SDReport = SDDoctor();            
-                if(!SDReport)
+                bool sdReport = SdHealthyChecker();            
+                if(!sdReport)
                 {
                     showError(Pins::BUILT_IN_LED);
                     setupSD(); // Attempt hardware re-initialization
@@ -147,7 +147,7 @@ void runFSM()
                 break;
             } else if(scanMode == "BT") {
                 #if ENABLE_BT
-                    BTSniffer(); // Start BLE advertising discovery    
+                    BluetoothSniffer(); // Start BLE advertising discovery    
                     #if !ASYNC_SD_HANDLER && ENABLE_SD
                         processAllLogsSequential();
                     #endif
