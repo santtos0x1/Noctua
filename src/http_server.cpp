@@ -24,12 +24,12 @@ const bool manualWiFiConnection = false;
 bool startServer() 
 {
     // Ensure the radio is in a clean state before starting the scan
-    DEBUG_PRINTLN("Resetting WiFi connection...");
+    DEBUG_PRINTLN(CLR_YELLOW "Resetting WiFi connection..." CLR_RESET);
     WiFi.disconnect();
     delay(Time::LOW_DELAY);
 
     // Perform a synchronous scan of nearby Access Points
-    DEBUG_PRINTLN("Scanning for available networks...");
+    DEBUG_PRINTLN(CLR_YELLOW "Scanning for available networks..." CLR_RESET);
     int networks = WiFi.scanNetworks();
 
     for (int i = 0; i < networks; i++)
@@ -39,8 +39,8 @@ bool startServer()
         int32_t dbm = WiFi.RSSI(i);
         if(encryptionType == WIFI_AUTH_OPEN && dbm >= -65)
         {
-            DEBUG_PRINTLN("Open network identified!");
-            DEBUG_PRINTF("Attempting connection to SSID: %s\n", WiFi.SSID(i).c_str());
+            DEBUG_PRINTLN(CLR_GREEN "Open network identified!" CLR_RESET);
+            DEBUG_PRINTF(CLR_CYN "Attempting connection to SSID: %s\n" CLR_RESET, WiFi.SSID(i).c_str());
             
             // Logic switch between hardcoded credentials and open connection
             if(!manualWiFiConnection)
@@ -59,17 +59,17 @@ bool startServer()
             while (connStatus != WL_CONNECTED && attempts < SERVER_ATTEMPTS_LIMIT) 
             {
                 delay(Time::MID_DELAY);
-                DEBUG_PRINT(".");
+                DEBUG_PRINT(CLR_YELLOW "." CLR_RESET);
                 attempts++;
                 connStatus = WiFi.status(); // Update status in each iteration
             }
 
             if(connStatus == WL_CONNECTED)
             {
-                DEBUG_PRINTLN("Connection established successfully!");
+                DEBUG_PRINTLN(CLR_GREEN "\nConnection established successfully!" CLR_RESET);
                 break; // Exit scan loop once connected
             } else {
-                DEBUG_PRINTLN("Failed to associate with this network.");
+                DEBUG_PRINTLN(CLR_RED "\nFailed to associate with this network." CLR_RESET);
             }
         }
     }
@@ -77,14 +77,14 @@ bool startServer()
     // Final check to initiate the HTTP service
     if(WiFi.status() == WL_CONNECTED)
     {
-        DEBUG_PRINTLN("Initializing HTTP Listener...");
+        DEBUG_PRINTLN(CLR_YELLOW "Initializing HTTP Listener..." CLR_RESET);
         server.begin();
-        DEBUG_PRINTLN("Server active!");
-        DEBUG_PRINT("Local IP Address: ");
+        DEBUG_PRINTLN(CLR_GREEN "Server active!" CLR_RESET);
+        DEBUG_PRINT(CLR_CYN "Local IP Address: " CLR_RESET);
         DEBUG_PRINTLN(WiFi.localIP());
         return true;
     } else {
-        DEBUG_PRINTLN("Server startup failed: No valid connection.");
+        DEBUG_PRINTLN(CLR_RED "Server startup failed: No valid connection." CLR_RESET);
         return false;
     }
 }
@@ -95,14 +95,14 @@ bool startServer()
  */
 void handleDownload(WiFiClient& client, String path)
 {
-    DEBUG_PRINTF("Verifying path: %s...", path.c_str());
+    DEBUG_PRINTF(CLR_YELLOW "Verifying path: %s..." CLR_RESET, path.c_str());
     if (SD.exists(path))
     {
-        DEBUG_PRINTLN("File found.");
+        DEBUG_PRINTLN(CLR_GREEN "File found." CLR_RESET);
         File dataFile = SD.open(path);
 
         // Constructing standard HTTP headers for binary file transfer
-        DEBUG_PRINTLN("Sending HTTP 200 Headers...");
+        DEBUG_PRINTLN(CLR_YELLOW "Sending HTTP 200 Headers..." CLR_RESET);
         client.println("HTTP/1.1 200 OK");
         client.println("Content-Type: application/octet-stream"); // Triggers browser download
         client.print("Content-Length: ");
@@ -112,7 +112,7 @@ void handleDownload(WiFiClient& client, String path)
 
         // Data streaming loop using a memory-efficient buffer
         uint8_t buffer[HND_BUFFER_SIZE];
-        DEBUG_PRINTLN("Streaming data payload...");
+        DEBUG_PRINTLN(CLR_CYN "Streaming data payload..." CLR_RESET);
         while (dataFile.available())
         {
             int bytesRead = dataFile.read(buffer, sizeof(buffer));
@@ -120,9 +120,10 @@ void handleDownload(WiFiClient& client, String path)
         }
         
         dataFile.close();
-        DEBUG_PRINTLN("Transfer complete. File closed.");
+        DEBUG_PRINTLN(CLR_GREEN "Transfer complete. File closed." CLR_RESET);
     } else {
         // Standard 404 response for non-existent log files
+        DEBUG_PRINTLN(CLR_RED "File NOT found on SD card." CLR_RESET);
         client.println("HTTP/1.1 404 Not Found\r\n\r\nError: File not found on SD.");
     }
 }
@@ -134,7 +135,7 @@ void handleDownload(WiFiClient& client, String path)
 void sendIndexSD(WiFiClient& client)
 {
     // Send basic HTML document headers
-    DEBUG_PRINTLN("Generating Index Page...");
+    DEBUG_PRINTLN(CLR_YELLOW "Generating Index Page..." CLR_RESET);
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html; charset=utf-8");
     client.println();
@@ -177,6 +178,7 @@ void sendIndexSD(WiFiClient& client)
     BTRoot.close();
     
     client.println("</ul></body></html>");
+    DEBUG_PRINTLN(CLR_GREEN "Index page sent successfully." CLR_RESET);
 }    
 
 /**
@@ -190,7 +192,7 @@ void serverRun()
     
     if(client)
     {
-        DEBUG_PRINTLN("New client connection established.");
+        DEBUG_PRINTLN(CLR_GRN "New client connection established." CLR_RESET);
         
         // Simple HTTP GET request parsing
         String request = client.readStringUntil('\r');
@@ -213,6 +215,6 @@ void serverRun()
         // Standard delay for connection stabilization before closing
         delay(Time::LOW_DELAY);
         client.stop();
-        DEBUG_PRINTLN("Client session terminated.");
+        DEBUG_PRINTLN(CLR_YELLOW "Client session terminated." CLR_RESET);
     }
 }

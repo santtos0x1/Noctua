@@ -14,13 +14,12 @@ QueueHandle_t WiFiQueue;
  */
 void setupWiFi()
 {
-    DEBUG_PRINTLN("Creating WiFi queue...");
+    DEBUG_PRINTLN(CLR_YELLOW "Creating WiFi queue..." CLR_RESET);
     #if ASYNC_SD_HANDLER
         WiFiQueue = xQueueCreate(50, sizeof(WiFiData));    
     #else
         WiFiQueue = xQueueCreate(20, sizeof(WiFiData));
     #endif
-    
 }
 
 /**
@@ -33,7 +32,7 @@ void wifiSniffer()
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
 
-    DEBUG_PRINTLN("Starting network scan...");
+    DEBUG_PRINTLN(CLR_YELLOW "Starting network scan..." CLR_RESET);
     int numNetworksFound = WiFi.scanNetworks();
 
     for (int i = 0; i < numNetworksFound; i++)
@@ -44,6 +43,7 @@ void wifiSniffer()
         // Passive Data Collection (SSID, RSSI, BSSID, Channel)
         strncpy(data.ssid, WiFi.SSID(i).c_str(), sizeof(data.ssid) - 1);
         data.rssi = WiFi.RSSI(i);
+        
         if(data.rssi >= -50)
         {
             strncpy(data.dbmQuality, "Strong", sizeof(data.dbmQuality) - 1);
@@ -93,7 +93,7 @@ void wifiSniffer()
 
         // Offload captured data to the processing queue
         if (xQueueSend(WiFiQueue, &data, pdMS_TO_TICKS(100)) != pdPASS) {
-            DEBUG_PRINTLN("WiFi Queue Full! Data lost.");
+            DEBUG_PRINTLN(CLR_RED "WiFi Queue Full! Data lost." CLR_RESET);
         }
     }
     

@@ -18,14 +18,14 @@ String WDFolderSDPath = "/wardrive_log_data";
  */
 void setupSD()
 {
-    DEBUG_PRINTLN("Starting the SD Card");
+    DEBUG_PRINTLN(CLR_YELLOW "Starting the SD Card..." CLR_RESET);
     bool startSD = SD.begin(Pins::SD_CS);
     
     // Hardware handshake: Blocks execution until the SD card is detected
     while (!startSD)
     {
         delay(Time::MID_DELAY);
-        DEBUG_PRINT(".");
+        DEBUG_PRINT(CLR_RED "." CLR_RESET);
         startSD = SD.begin(Pins::SD_CS); // Retry connection
     }
 
@@ -34,19 +34,19 @@ void setupSD()
     SD.mkdir(BTFolderSDPath);
     SD.mkdir(WDFolderSDPath);
 
-    DEBUG_PRINTLN("\nSuccessfully started the SD Card!");
+    DEBUG_PRINTLN(CLR_GREEN "\nSuccessfully started the SD Card!" CLR_RESET);
 
     /* Session Management: Reads the last session ID from 'session.txt' 
        to prevent file overwriting after a system reboot.
     */
-    DEBUG_PRINTLN("Reading the session file...");
+    DEBUG_PRINTLN(CLR_YELLOW "Reading the session file..." CLR_RESET);
     File rCounterData = SD.open("/session.txt", FILE_READ);
     if(rCounterData)
     {
         String content = rCounterData.readString();
         session_id = content.toInt();
         rCounterData.close();
-        DEBUG_PRINTLN("Done!");
+        DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
     }
 
     // Increment session ID for the current power cycle
@@ -55,13 +55,13 @@ void setupSD()
     /* Updates the persistent counter file with the new session ID.
        Using "w" (FILE_WRITE) to overwrite the previous value.
     */
-    DEBUG_PRINTLN("Defining a new session in session file...");
+    DEBUG_PRINTLN(CLR_YELLOW "Defining a new session in session file..." CLR_RESET);
     File wCounterData = SD.open("/session.txt", FILE_WRITE);
     if(wCounterData)
     {
         wCounterData.print(session_id);
         wCounterData.close();
-        DEBUG_PRINTLN("Done!");
+        DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
     }
 
     #if ASYNC_SD_HANDLER
@@ -74,6 +74,7 @@ void setupSD()
             NULL,
             0
         );
+        DEBUG_PRINTLN(CLR_GREEN "SD Async Task launched on Core 0." CLR_RESET);
     #endif
 }
 
@@ -93,23 +94,23 @@ void setupSD()
         {
             // Non-blocking check for WiFi Queue
             if (xQueueReceive(WiFiQueue, &wifiData, 0) == pdPASS) {
-                 DEBUG_PRINTLN("Receiving data from the WiFi queue...");
+                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the WiFi queue..." CLR_RESET);
                  processWiFiLog(wifiData);
-                 DEBUG_PRINTLN("Done!");
+                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
             }
 
             // Non-blocking check for Bluetooth Queue
             if (xQueueReceive(BTQueue, &btData, 0) == pdPASS) {
-                 DEBUG_PRINTLN("Receiving data from the Bluetooth queue...");
+                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the Bluetooth queue..." CLR_RESET);
                  processBluetoothLog(btData);
-                 DEBUG_PRINTLN("Done!");
+                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
             }
 
             // Non-blocking check for Wardrive Queue
             if (xQueueReceive(WDQueue, &wdData, 0) == pdPASS) {
-                 DEBUG_PRINTLN("Receiving data from the Wardrive queue...");
+                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the Wardrive queue..." CLR_RESET);
                  processWardriveLog(wdData);
-                 DEBUG_PRINTLN("Done!");
+                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
             }
 
             vTaskDelay(pdMS_TO_TICKS(10));
@@ -133,12 +134,12 @@ void setupSD()
 
         // Drain BT Queue
         while (xQueueReceive(BTQueue, &btData, 0) == pdPASS) {
-            processBTLog(btData);
+            processBluetoothLog(btData);
         }
 
         // Drain Wardrive Queue
         while (xQueueReceive(WDQueue, &wdData, 0) == pdPASS) {
-            processWDLog(wdData);
+            processWardriveLog(wdData);
         }
     }
 #endif
@@ -152,7 +153,7 @@ void processWiFiLog(WiFiData data)
     // Dynamic filename generation using the current session ID
     String WiFiFileName = WiFiFolderSDPath + "/wf_" + String(session_id) + ".csv";
     
-    DEBUG_PRINTF("Target file: '%s'\n", WiFiFileName.c_str());
+    DEBUG_PRINTF(CLR_YELLOW "Target file: '%s'\n" CLR_RESET, WiFiFileName.c_str());
 
     // Checks if file exists to determine if headers are needed
     bool fileExists = SD.exists(WiFiFileName);
@@ -181,10 +182,10 @@ void processWiFiLog(WiFiData data)
                         data.subNetMask);
         
         dataFile.close();
-        DEBUG_PRINTF("Successfully saved to %s\n", WiFiFileName.c_str());
+        DEBUG_PRINTF(CLR_GREEN "Successfully saved to %s\n" CLR_RESET, WiFiFileName.c_str());
     } 
     else {
-        DEBUG_PRINTF("Error opening %s\n", WiFiFileName.c_str());
+        DEBUG_PRINTF(CLR_RED "Error opening %s\n" CLR_RESET, WiFiFileName.c_str());
     }
 }
 
@@ -195,7 +196,7 @@ void processBluetoothLog(BTData data)
 {
     String BTFileName = BTFolderSDPath + "/bt_" + String(session_id) + ".csv";
     
-    DEBUG_PRINTF("Target file: '%s'.\n", BTFileName.c_str());
+    DEBUG_PRINTF(CLR_YELLOW "Target file: '%s'.\n" CLR_RESET, BTFileName.c_str());
     
     bool fileExists = SD.exists(BTFileName);
     File dataFile = SD.open(BTFileName, FILE_APPEND);
@@ -214,9 +215,9 @@ void processBluetoothLog(BTData data)
                         data.addressType,
                         data.channel);
         dataFile.close();
-        DEBUG_PRINTF("Successfully saved to %s\n", BTFileName.c_str());
+        DEBUG_PRINTF(CLR_GREEN "Successfully saved to %s\n" CLR_RESET, BTFileName.c_str());
     } else {
-        DEBUG_PRINTF("Error opening %s\n", BTFileName.c_str());
+        DEBUG_PRINTF(CLR_RED "Error opening %s\n" CLR_RESET, BTFileName.c_str());
     }
 }
 
@@ -227,7 +228,7 @@ void processWardriveLog(WardriveData data)
 {
     String WDFileName = WDFolderSDPath + "/wd_" + String(session_id) + ".csv";
     
-    DEBUG_PRINTF("Target file: '%s'.\n", WDFileName.c_str());
+    DEBUG_PRINTF(CLR_YELLOW "Target file: '%s'.\n" CLR_RESET, WDFileName.c_str());
     
     bool fileExists = SD.exists(WDFileName);
     File dataFile = SD.open(WDFileName, FILE_APPEND);
@@ -240,8 +241,8 @@ void processWardriveLog(WardriveData data)
         }
         dataFile.printf("%s,%d\n", data.ssid, data.rssi);
         dataFile.close();
-        DEBUG_PRINTF("Successfully saved to %s\n", WDFileName.c_str());
+        DEBUG_PRINTF(CLR_GREEN "Successfully saved to %s\n" CLR_RESET, WDFileName.c_str());
     } else {
-        DEBUG_PRINTF("Error opening %s\n", WDFileName.c_str());
+        DEBUG_PRINTF(CLR_RED "Error opening %s\n" CLR_RESET, WDFileName.c_str());
     }
 }

@@ -119,13 +119,14 @@ void runFSM()
         */
         case SCAN:
         {
-            DEBUG_PRINTLN("Current FSM state: SCAN");
+            DEBUG_PRINTLN(CLR_YELLOW "Current FSM state: SCAN" CLR_RESET);
             
             #if ENABLE_SD
                 // Verify storage health before attempting to write
                 bool sdReport = SdHealthyChecker();            
                 if(!sdReport)
                 {
+                    DEBUG_PRINTLN(CLR_RED "SD Health Check FAILED!" CLR_RESET);
                     showError(Pins::BUILT_IN_LED);
                     setupSD(); // Attempt hardware re-initialization
                     currentState = IDLE;
@@ -165,7 +166,7 @@ void runFSM()
         */
         case WEB_SERVER:
         {
-            DEBUG_PRINTLN("Current FSM state: WEB_SERVER");
+            DEBUG_PRINTLN(CLR_YELLOW "Current FSM state: WEB_SERVER" CLR_RESET);
             
             if(serverStatus && scanMode == "WS")
             {
@@ -180,6 +181,7 @@ void runFSM()
                     break;
                 }
             } else {
+                DEBUG_PRINTLN(CLR_RED "Server Error or Invalid Mode!" CLR_RESET);
                 showError(Pins::BUILT_IN_LED);
                 currentState = IDLE;
                 break;
@@ -196,6 +198,7 @@ void runFSM()
             // Exit condition
             if(btnBPressed) 
             {
+                DEBUG_PRINTLN(CLR_YELLOW "Exiting WARDRIVE_MODE..." CLR_RESET);
                 currentState = IDLE;
                 break;
             }
@@ -207,6 +210,7 @@ void runFSM()
             
             if(openFound) {
                 // Visual feedback for open networks found during wardrive
+                DEBUG_PRINTLN(CLR_GREEN "Open Network Found!" CLR_RESET);
                 showSuccess(Pins::BUILT_IN_LED); 
             }
             
