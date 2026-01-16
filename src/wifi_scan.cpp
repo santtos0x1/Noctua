@@ -27,7 +27,7 @@ void setupWiFi()
  * Executes a full WiFi scan and attempts to probe open networks 
  * for deeper network configuration details (DHCP, IP, DNS).
  */
-void WiFiSniffer()
+void wifiSniffer()
 {
     // Resets WiFi radio state to Station Mode
     WiFi.mode(WIFI_STA);

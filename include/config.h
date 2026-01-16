@@ -17,6 +17,12 @@
  * DEBUGGING MACROS
  * =================================================================
  */
+
+#define CLR_RED     "\033[0;31m"
+#define CLR_GREEN   "\033[0;32m"
+#define CLR_YELLOW  "\033[0;33m"
+#define CLR_RESET   "\033[0m"
+
 #if DEBUG
   #define DEBUG_PRINTLN(x)     Serial.println(x)
   #define DEBUG_PRINT(x)       Serial.print(x)

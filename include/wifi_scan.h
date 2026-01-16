@@ -2,6 +2,6 @@
 #define WIFI_SCAN_H
 
 void setupWiFi();
-void WiFiSniffer();
+void wifiSniffer();
 
 #endif // !WIFI_SCAN_H

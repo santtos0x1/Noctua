@@ -136,7 +136,7 @@ void runFSM()
             if(scanMode == "WF")
             {   
                 #if ENABLE_WIFI
-                    WiFiSniffer(); // Start 802.11 packet capture
+                    wifiSniffer(); // Start 802.11 packet capture
                     #if !ASYNC_SD_HANDLER && ENABLE_SD
                         processAllLogsSequential();
                     #endif    
