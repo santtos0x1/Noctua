@@ -1,6 +1,7 @@
 // Local libs
 #include "config.h"
 #include "bluetooth_scan.h"
+#include "utils.h"
 
 // Libs
 #include <BLEAdvertisedDevice.h>
@@ -93,9 +94,9 @@ void setupBluetooth()
 {
     DEBUG_PRINTLN(F(CLR_YELLOW "Creating the queue..." CLR_RESET));
     #if ASYNC_SD_HANDLER
-        BTQueue = xQueueCreate(50, sizeof(BTData));
+        BTQueue = xQueueCreate(DUALCORE_MAX_XQUEUE, sizeof(BTData));
     #else
-        BTQueue = xQueueCreate(20, sizeof(BTData));
+        BTQueue = xQueueCreate(SINGLECORE_MAX_XQUEUE, sizeof(BTData));
     #endif
 
     DEBUG_PRINTLN(F(CLR_YELLOW "Starting bluetooth modules..." CLR_RESET));

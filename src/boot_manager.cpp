@@ -1,5 +1,6 @@
 #include "config.h"
 #include "boot_manager.h"
+#include "utils.h"
 
 #include <Arduino.h>
 
@@ -23,21 +24,21 @@ void configCheck()
     DEBUG_PRINTF(F("%s[BOOT]%s Checking hardware & modules..."), CLR_GREEN, CLR_RESET);
 
     DEBUG_PRINT(F("> WiFi Stack:      "));
-    #if ENABLE_WIFI
+    #if SYS_FEATURE_WIFI_SCAN
         DEBUG_PRINTF(F("(%s[ ENABLED  ]%s\n"), CLR_GREEN, CLR_RESET);
     #else
         DEBUG_PRINTF(F("%s[ DISABLED  ]%s\n"), CLR_RED, CLR_RESET);
     #endif
 
     DEBUG_PRINT(F("> Bluetooth Stack: "));
-    #if ENABLE_BT
+    #if SYS_FEATURE_BLE_STACK
         DEBUG_PRINTF(F("%s[ ENABLED  ]%s\n"), CLR_GREEN, CLR_RESET);
     #else
         DEBUG_PRINTF(F("%s[ DISABLED  ]%s\n"), CLR_RED, CLR_RESET);
     #endif
 
     DEBUG_PRINT(F("> SD Storage:     "));
-    #if ENABLE_SD
+    #if SYS_FEATURE_SD_STORAGE
         DEBUG_PRINTF(F("%s[ ENABLED  ]%s\n", CLR_GREEN, CLR_RESET));
     #else
         DEBUG_PRINTF(F("%s[ DISABLED  ]%s\n", CLR_RED, CLR_RESET));

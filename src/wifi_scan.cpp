@@ -1,6 +1,7 @@
 // Local Libs
 #include "wifi_scan.h"
 #include "config.h"
+#include "utils.h"
 
 // Libs
 #include <esp_wifi.h>
@@ -16,9 +17,9 @@ void setupWiFi()
 {
     DEBUG_PRINTLN(F(CLR_YELLOW "Creating WiFi queue..." CLR_RESET));
     #if ASYNC_SD_HANDLER
-        WiFiQueue = xQueueCreate(50, sizeof(WiFiData));    
+        WiFiQueue = xQueueCreate(DUALCORE_MAX_XQUEUE, sizeof(WiFiData));    
     #else
-        WiFiQueue = xQueueCreate(20, sizeof(WiFiData));
+        WiFiQueue = xQueueCreate(SINGLECORE_MAX_XQUEUE, sizeof(WiFiData));
     #endif
 }
 
@@ -43,9 +44,7 @@ void wifiSniffer()
         // Passive Data Collection (SSID, RSSI, BSSID, Channel)
         strncpy(data.ssid, WiFi.SSID(i).c_str(), sizeof(data.ssid) - 1);
         data.rssi = WiFi.RSSI(i);
-        
         strncpy(data.dbmQuality, GET_RSSI_QUALITY(data.rssi), sizeof(data.dbmQuality) - 1);
-        
         strncpy(data.bssid, WiFi.BSSIDstr(i).c_str(), sizeof(data.bssid));
         data.encryptionType = WiFi.encryptionType(i);
         data.channel = WiFi.channel(i);

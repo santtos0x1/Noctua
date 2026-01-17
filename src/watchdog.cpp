@@ -1,5 +1,6 @@
 // Local Libs
 #include "watchdog.h"
+#include "utils.h"
 #include "config.h"
 
 // Libs

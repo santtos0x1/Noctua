@@ -8,6 +8,7 @@
 #include "bt_scan.h"
 #include "config.h"
 #include "fsm.h"
+#include "utils.h"
 
 // Libs
 #include <Arduino.h>
@@ -31,13 +32,13 @@ uint8_t systemState = 0;
 void setupFSM()
 {
     // Conditional initialization of hardware modules
-    #if ENABLE_WIFI
+    #if SYS_FEATURE_WIFI_SCAN
         setupWiFi();
     #endif
-    #if ENABLE_BT
+    #if SYS_FEATURE_BLE_STACK
         setupBluetooth();
     #endif    
-    #if ENABLE_SD
+    #if SYS_FEATURE_SD_STORAGE
         setupSD();
     #endif    
     
@@ -118,7 +119,7 @@ void runFSM()
         {
             DEBUG_PRINTLN(F(CLR_YELLOW "Current FSM state: SCAN" CLR_RESET));
             
-            #if ENABLE_SD
+            #if SYS_FEATURE_SD_STORAGE
                 // Verify storage health before attempting to write
                 bool sdReport = SdHealthyChecker();            
                 if(!sdReport)
@@ -133,9 +134,9 @@ void runFSM()
             
             if(scanMode == "WF")
             {   
-                #if ENABLE_WIFI
+                #if SYS_FEATURE_WIFI_SCAN
                     wifiSniffer(); // Start 802.11 packet capture
-                    #if !ASYNC_SD_HANDLER && ENABLE_SD
+                    #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
                         processAllLogsSequential();
                     #endif    
                     showSuccess(Pins::BUILT_IN_LED);
@@ -144,9 +145,9 @@ void runFSM()
                 currentState = IDLE;
                 break;
             } else if(scanMode == "BT") {
-                #if ENABLE_BT
+                #if SYS_FEATURE_BLE_STACK
                     BluetoothSniffer(); // Start BLE advertising discovery    
-                    #if !ASYNC_SD_HANDLER && ENABLE_SD
+                    #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
                         processAllLogsSequential();
                     #endif
                     showSuccess(Pins::BUILT_IN_LED);
@@ -200,7 +201,7 @@ void runFSM()
             }
 
             bool openFound = startWardrive();
-            #if !ASYNC_SD_HANDLER && ENABLE_SD
+            #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
                 processAllLogsSequential();
             #endif
             

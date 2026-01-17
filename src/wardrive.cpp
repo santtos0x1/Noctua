@@ -2,6 +2,7 @@
 #include "indicator.h"
 #include "wardrive.h"
 #include "config.h"
+#include "utils.h"
 
 // Libs
 #include <Arduino.h>
@@ -16,9 +17,9 @@ void setupWardrive()
 {
     DEBUG_PRINTLN(F(CLR_YELLOW "Creating wardrive queue..." CLR_RESET));
     #if ASYNC_SD_HANDLER
-        WDQueue = xQueueCreate(50, sizeof(WardriveData));
+        WDQueue = xQueueCreate(DUALCORE_MAX_XQUEUE, sizeof(WardriveData));
     #else
-        WDQueue = xQueueCreate(20, sizeof(WardriveData));
+        WDQueue = xQueueCreate(SINGLECORE_MAX_XQUEUE, sizeof(WardriveData));
     #endif
     DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
 }

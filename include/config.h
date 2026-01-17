@@ -7,23 +7,18 @@
  * GLOBAL SETTINGS (MACROS)
  * =================================================================
  */
-#define ENABLE_SD        0     
-#define ENABLE_WIFI      1
-#define ENABLE_BT        1
-#define DEBUG            1
-#define ASYNC_SD_HANDLER 1
+#define SYS_FEATURE_SD_STORAGE  0     
+#define SYS_FEATURE_WIFI_SCAN   1
+#define SYS_FEATURE_BLE_STACK   1
+#define SYS_CFG_DEBUG_MODE      1
+#define ASYNC_SD_HANDLER        1
 
 /* * =================================================================
  * DEBUGGING MACROS
  * =================================================================
  */
 
-#define CLR_RED     "\033[0;31m"
-#define CLR_GREEN   "\033[0;32m"
-#define CLR_YELLOW  "\033[0;33m"
-#define CLR_RESET   "\033[0m"
-
-#if DEBUG
+#if SYS_CFG_DEBUG_MODE
   #define DEBUG_PRINTLN(x)     Serial.println(x)
   #define DEBUG_PRINT(x)       Serial.print(x)
   #define DEBUG_PRINTF(f, ...) Serial.printf(f, ##__VA_ARGS__)
@@ -37,23 +32,22 @@
  * MODULE PARAMETERS (.cpp)
  * =================================================================
  */
+// Global
+#define DUALCORE_MAX_XQUEUE    50
+#define SINGLECORE_MAX_XQUEUE  20
+
 // bt_scan.cpp
 #define SCAN_TIME              5
+
+//main.cpp
+#define BAUD_RATE              115200
 
 // data_logger.cpp
 #define RAM_FLUSH_LIM          5
 
-// wifi_scan.cpp
-#define CONN_TIMEOUT_MS       (10 * 1000)
-#define GET_RSSI_QUALITY(rssi) ( \
-    (rssi >= -50) ? "Strong" :  \
-    (rssi >= -70) ? "Medium" :  \
-    (rssi >= -85) ? "Weak"   : "V.Weak" \
-)
-
 // http_server.cpp
-#define WEB_SERVER_PORT       80
-#define HANDLER_BUFFER_SIZE   512
+#define WEB_SERVER_PORT        80
+#define HANDLER_BUFFER_SIZE    512
 
 /* * =================================================================
  * HARDWARE PINOUTS
@@ -73,7 +67,7 @@ namespace Pins
  * =================================================================
  */
 namespace Time {
-  static constexpr uint8_t LOW_DELAY  = 100;
+  static constexpr uint8_t LOW_DELAY   = 100;
   static constexpr uint16_t LMID_DELAY = 300;
   static constexpr uint16_t MID_DELAY  = 500;
   static constexpr uint16_t HMID_DELAY = 1000;

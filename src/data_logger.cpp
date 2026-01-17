@@ -1,6 +1,9 @@
 // Local libs
 #include "data_logger.h"
 #include "config.h"
+#include "utils.h"
+
+// Libs
 #include <Arduino.h>
 #include <SD.h>
 

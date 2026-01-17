@@ -1,13 +1,7 @@
 // Local libs
 #include "http_server.h"
-#include "data_logger.h"
-#include "wifi_scan.h"
-#include "indicator.h"
-#include "watchdog.h"
-#include "wardrive.h"
-#include "bt_scan.h"
 #include "config.h"
-#include "fsm.h"
+#include "utils.h"
 
 // Libs
 #include <Arduino.h>

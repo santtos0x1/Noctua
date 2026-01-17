@@ -28,7 +28,7 @@ void setup()
 {
     // Initialize UART for Serial Monitor debugging
     // Note: Baud rate must match the configuration in platformio.ini or monitor
-    Serial.begin(115200);
+    Serial.begin(BAUD_RATE);
     
     // Print firmware banner to confirm boot success
     logoInit();
