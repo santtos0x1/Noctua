@@ -18,14 +18,14 @@ String WDFolderSDPath = "/wardrive_log_data";
  */
 void setupSD()
 {
-    DEBUG_PRINTLN(CLR_YELLOW "Starting the SD Card..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Starting the SD Card..." CLR_RESET));
     bool startSD = SD.begin(Pins::SD_CS);
     
     // Hardware handshake: Blocks execution until the SD card is detected
     while (!startSD)
     {
         delay(Time::MID_DELAY);
-        DEBUG_PRINT(CLR_RED "." CLR_RESET);
+        DEBUG_PRINT(F(CLR_RED "." CLR_RESET));
         startSD = SD.begin(Pins::SD_CS); // Retry connection
     }
 
@@ -34,19 +34,19 @@ void setupSD()
     SD.mkdir(BTFolderSDPath);
     SD.mkdir(WDFolderSDPath);
 
-    DEBUG_PRINTLN(CLR_GREEN "\nSuccessfully started the SD Card!" CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_GREEN "\nSuccessfully started the SD Card!" CLR_RESET));
 
     /* Session Management: Reads the last session ID from 'session.txt' 
        to prevent file overwriting after a system reboot.
     */
-    DEBUG_PRINTLN(CLR_YELLOW "Reading the session file..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Reading the session file..." CLR_RESET));
     File rCounterData = SD.open("/session.txt", FILE_READ);
     if(rCounterData)
     {
         String content = rCounterData.readString();
         session_id = content.toInt();
         rCounterData.close();
-        DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
+        DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
     }
 
     // Increment session ID for the current power cycle
@@ -55,13 +55,13 @@ void setupSD()
     /* Updates the persistent counter file with the new session ID.
        Using "w" (FILE_WRITE) to overwrite the previous value.
     */
-    DEBUG_PRINTLN(CLR_YELLOW "Defining a new session in session file..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Defining a new session in session file..." CLR_RESET));
     File wCounterData = SD.open("/session.txt", FILE_WRITE);
     if(wCounterData)
     {
         wCounterData.print(session_id);
         wCounterData.close();
-        DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
+        DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
     }
 
     #if ASYNC_SD_HANDLER
@@ -74,7 +74,7 @@ void setupSD()
             NULL,
             0
         );
-        DEBUG_PRINTLN(CLR_GREEN "SD Async Task launched on Core 0." CLR_RESET);
+        DEBUG_PRINTLN(F(CLR_GREEN "SD Async Task launched on Core 0." CLR_RESET));
     #endif
 }
 
@@ -94,23 +94,23 @@ void setupSD()
         {
             // Non-blocking check for WiFi Queue
             if (xQueueReceive(WiFiQueue, &wifiData, 0) == pdPASS) {
-                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the WiFi queue..." CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_YELLOW "Receiving data from the WiFi queue..." CLR_RESET));
                  processWiFiLog(wifiData);
-                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
             }
 
             // Non-blocking check for Bluetooth Queue
             if (xQueueReceive(BTQueue, &btData, 0) == pdPASS) {
-                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the Bluetooth queue..." CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_YELLOW "Receiving data from the Bluetooth queue..." CLR_RESET));
                  processBluetoothLog(btData);
-                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
             }
 
             // Non-blocking check for Wardrive Queue
             if (xQueueReceive(WDQueue, &wdData, 0) == pdPASS) {
-                 DEBUG_PRINTLN(CLR_YELLOW "Receiving data from the Wardrive queue..." CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_YELLOW "Receiving data from the Wardrive queue..." CLR_RESET));
                  processWardriveLog(wdData);
-                 DEBUG_PRINTLN(CLR_GREEN "Done!" CLR_RESET);
+                 DEBUG_PRINTLN(F(CLR_GREEN "Done!" CLR_RESET));
             }
 
             vTaskDelay(pdMS_TO_TICKS(10));
@@ -162,7 +162,7 @@ void processWiFiLog(WiFiData data)
 
     if (dataFile)
     {
-        DEBUG_PRINTLN("Writing data to SD...");
+        DEBUG_PRINTLN(F("Writing data to SD..."));
         
         // Append CSV headers only to new files for data analysis compatibility
         if (!fileExists) {
@@ -196,6 +196,7 @@ void processBluetoothLog(BTData data)
 {
     String BTFileName = BTFolderSDPath + "/bt_" + String(session_id) + ".csv";
     
+    // Corrigido: Removido F() do printf para evitar erro de compilação e corrigido parênteses
     DEBUG_PRINTF(CLR_YELLOW "Target file: '%s'.\n" CLR_RESET, BTFileName.c_str());
     
     bool fileExists = SD.exists(BTFileName);
@@ -203,7 +204,7 @@ void processBluetoothLog(BTData data)
     
     if (dataFile)
     {
-        DEBUG_PRINTLN("Appending Bluetooth data...");
+        DEBUG_PRINTLN(F("Appending Bluetooth data..."));
         if (!fileExists) {
             dataFile.println("NAME, ADDRESS, RSSI, ADDRESS TYPE, CHANNEL");
         }
@@ -235,7 +236,7 @@ void processWardriveLog(WardriveData data)
     
     if(dataFile)
     {
-        DEBUG_PRINTLN("Writing Wardrive log...");
+        DEBUG_PRINTLN(F("Writing Wardrive log..."));
         if (!fileExists) {
             dataFile.println("SSID, RSSI");
         }

@@ -1,4 +1,4 @@
-// Local libs
+// Local Libs
 #include "wifi_scan.h"
 #include "config.h"
 
@@ -14,7 +14,7 @@ QueueHandle_t WiFiQueue;
  */
 void setupWiFi()
 {
-    DEBUG_PRINTLN(CLR_YELLOW "Creating WiFi queue..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Creating WiFi queue..." CLR_RESET));
     #if ASYNC_SD_HANDLER
         WiFiQueue = xQueueCreate(50, sizeof(WiFiData));    
     #else
@@ -32,7 +32,7 @@ void wifiSniffer()
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
 
-    DEBUG_PRINTLN(CLR_YELLOW "Starting network scan..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Starting network scan..." CLR_RESET));
     int numNetworksFound = WiFi.scanNetworks();
 
     for (int i = 0; i < numNetworksFound; i++)
@@ -44,17 +44,8 @@ void wifiSniffer()
         strncpy(data.ssid, WiFi.SSID(i).c_str(), sizeof(data.ssid) - 1);
         data.rssi = WiFi.RSSI(i);
         
-        if(data.rssi >= -50)
-        {
-            strncpy(data.dbmQuality, "Strong", sizeof(data.dbmQuality) - 1);
-        } else if (data.rssi >= -70)
-        {
-            strncpy(data.dbmQuality, "Medium", sizeof(data.dbmQuality) - 1);
-        } else if (data.rssi >= -85)
-        {
-            strncpy(data.dbmQuality, "Weak", sizeof(data.dbmQuality) - 1);
-        }
-
+        strncpy(data.dbmQuality, GET_RSSI_QUALITY(data.rssi), sizeof(data.dbmQuality) - 1);
+        
         strncpy(data.bssid, WiFi.BSSIDstr(i).c_str(), sizeof(data.bssid));
         data.encryptionType = WiFi.encryptionType(i);
         data.channel = WiFi.channel(i);
@@ -93,10 +84,11 @@ void wifiSniffer()
 
         // Offload captured data to the processing queue
         if (xQueueSend(WiFiQueue, &data, pdMS_TO_TICKS(100)) != pdPASS) {
-            DEBUG_PRINTLN(CLR_RED "WiFi Queue Full! Data lost." CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_RED "WiFi Queue Full! Data lost." CLR_RESET));
         }
     }
     
     // Manual memory management for scan results
+    DEBUG_PRINTLN(F(CLR_YELLOW "Cleaning WiFi scan results..." CLR_RESET));
     WiFi.scanDelete();
 }

@@ -26,11 +26,11 @@
 #if DEBUG
   #define DEBUG_PRINTLN(x)     Serial.println(x)
   #define DEBUG_PRINT(x)       Serial.print(x)
-  #define DEBUG_PRINTF(x, ...) Serial.printf(x, ##__VA_ARGS__)
+  #define DEBUG_PRINTF(f, ...) Serial.printf(f, ##__VA_ARGS__)
 #else
   #define DEBUG_PRINTLN(x)             
   #define DEBUG_PRINT(x)               
-  #define DEBUG_PRINTF(x, ...) 
+  #define DEBUG_PRINTF(f, ...) 
 #endif
 
 /* * =================================================================
@@ -45,11 +45,15 @@
 
 // wifi_scan.cpp
 #define CONN_TIMEOUT_MS       (10 * 1000)
+#define GET_RSSI_QUALITY(rssi) ( \
+    (rssi >= -50) ? "Strong" :  \
+    (rssi >= -70) ? "Medium" :  \
+    (rssi >= -85) ? "Weak"   : "V.Weak" \
+)
 
 // http_server.cpp
 #define WEB_SERVER_PORT       80
-#define HND_BUFFER_SIZE       512
-#define SERVER_ATTEMPTS_LIMIT 20
+#define HANDLER_BUFFER_SIZE   512
 
 /* * =================================================================
  * HARDWARE PINOUTS
@@ -69,7 +73,7 @@ namespace Pins
  * =================================================================
  */
 namespace Time {
-  static constexpr uint16_t LOW_DELAY  = 100;
+  static constexpr uint8_t LOW_DELAY  = 100;
   static constexpr uint16_t LMID_DELAY = 300;
   static constexpr uint16_t MID_DELAY  = 500;
   static constexpr uint16_t HMID_DELAY = 1000;
@@ -118,5 +122,7 @@ struct WardriveData
 extern QueueHandle_t WiFiQueue;
 extern QueueHandle_t BTQueue;
 extern QueueHandle_t WDQueue;
+
+extern uint8_t systemState;
 
 #endif // !CONFIG_H

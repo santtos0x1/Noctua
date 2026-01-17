@@ -22,6 +22,7 @@ String scanMode;
 
 // Status flag for the asynchronous HTTP service
 bool serverStatus = false;
+uint8_t systemState = 0;
 
 /**
  * Bootstraps the FSM and initializes all modular subsystems 
@@ -69,9 +70,6 @@ void runFSM()
     {
         /* IDLE STATE:
            Monitoring user input to select operational mode.
-           - Button A: Single Click (WiFi Scan) / Double Click (Wardrive)
-           - Button B: Bluetooth Scan
-           - Button C: Web Server Mode
         */
         case IDLE:
         {
@@ -115,18 +113,17 @@ void runFSM()
 
         /* SCAN STATE:
            Executes the sniffing routine based on the active scanMode.
-           Includes data integrity checks for the SD card.
         */
         case SCAN:
         {
-            DEBUG_PRINTLN(CLR_YELLOW "Current FSM state: SCAN" CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_YELLOW "Current FSM state: SCAN" CLR_RESET));
             
             #if ENABLE_SD
                 // Verify storage health before attempting to write
                 bool sdReport = SdHealthyChecker();            
                 if(!sdReport)
                 {
-                    DEBUG_PRINTLN(CLR_RED "SD Health Check FAILED!" CLR_RESET);
+                    DEBUG_PRINTLN(F(CLR_RED "SD Health Check FAILED!" CLR_RESET));
                     showError(Pins::BUILT_IN_LED);
                     setupSD(); // Attempt hardware re-initialization
                     currentState = IDLE;
@@ -166,7 +163,7 @@ void runFSM()
         */
         case WEB_SERVER:
         {
-            DEBUG_PRINTLN(CLR_YELLOW "Current FSM state: WEB_SERVER" CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_YELLOW "Current FSM state: WEB_SERVER" CLR_RESET));
             
             if(serverStatus && scanMode == "WS")
             {
@@ -181,7 +178,7 @@ void runFSM()
                     break;
                 }
             } else {
-                DEBUG_PRINTLN(CLR_RED "Server Error or Invalid Mode!" CLR_RESET);
+                DEBUG_PRINTLN(F(CLR_RED "Server Error or Invalid Mode!" CLR_RESET));
                 showError(Pins::BUILT_IN_LED);
                 currentState = IDLE;
                 break;
@@ -190,15 +187,14 @@ void runFSM()
         }
 
         /* WARDRIVE_MODE:
-           Continuous capture mode combining WiFi signal strength 
-           with concurrent data logging.
+           Continuous capture mode combining WiFi signal strength.
         */
         case WARDRIVE_MODE:
         {
             // Exit condition
             if(btnBPressed) 
             {
-                DEBUG_PRINTLN(CLR_YELLOW "Exiting WARDRIVE_MODE..." CLR_RESET);
+                DEBUG_PRINTLN(F(CLR_YELLOW "Exiting WARDRIVE_MODE..." CLR_RESET));
                 currentState = IDLE;
                 break;
             }
@@ -210,11 +206,10 @@ void runFSM()
             
             if(openFound) {
                 // Visual feedback for open networks found during wardrive
-                DEBUG_PRINTLN(CLR_GREEN "Open Network Found!" CLR_RESET);
+                DEBUG_PRINTLN(F(CLR_GREEN "Open Network Found!" CLR_RESET));
                 showSuccess(Pins::BUILT_IN_LED); 
             }
             
-            // Note: This mode stays in WARDRIVE_MODE until BT_B is pressed
             break;
         }
     }

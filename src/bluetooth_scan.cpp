@@ -20,30 +20,31 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
         /*
             Clears the data struct before populating it to ensure memory integrity.
         */
-        DEBUG_PRINTLN(CLR_YELLOW "Cleaning data from the struct..." CLR_RESET);
+        DEBUG_PRINTLN(F(CLR_YELLOW "Cleaning data from the struct..." CLR_RESET));
         memset(&data, 0, sizeof(BTData));
 
         /*
             Retrieves device metadata.
         */
         bool haveName =  advertisedDevice.haveName();
-        DEBUG_PRINTLN("Getting device name...");
+        DEBUG_PRINTLN(F("Getting device name..."));
         if (haveName)
         {
-            DEBUG_PRINTF(CLR_GREEN "Device has a name: %s\n" CLR_RESET, advertisedDevice.getName().c_str());
+            // CORREÇÃO: F() aplicado apenas na string de formato e cor
+            DEBUG_PRINTF(F(CLR_GREEN "Device has a name: %s\n" CLR_RESET), advertisedDevice.getName().c_str());
             strncpy(data.name, advertisedDevice.getName().c_str(), sizeof(data.name) - 1);
         } else {
-            DEBUG_PRINTLN(CLR_RED "Device does not have a name!" CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_RED "Device does not have a name!" CLR_RESET));
             strncpy(data.name, "Unknown", sizeof(data.name) - 1);
         }
 
-        DEBUG_PRINTLN("Getting device address...");
+        DEBUG_PRINTLN(F("Getting device address..."));
         strncpy(data.address, advertisedDevice.getAddress().toString().c_str(), sizeof(data.address) - 1);
 
-        DEBUG_PRINTLN("Getting device RSSI...");
+        DEBUG_PRINTLN(F("Getting device RSSI..."));
         data.rssi = advertisedDevice.getRSSI();
 
-        DEBUG_PRINTLN("Getting device address type...");
+        DEBUG_PRINTLN(F("Getting device address type..."));
         esp_ble_addr_type_t type = advertisedDevice.getAddressType();
         switch (type)
         {
@@ -74,30 +75,30 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
             }
         }
 
-        DEBUG_PRINTLN("Defining channel...");
+        DEBUG_PRINTLN(F("Defining channel..."));
         data.channel = 0; 
 
         /* Sends the populated struct to the queue receiver. */
-        DEBUG_PRINTLN("Sending to the queue...");
+        DEBUG_PRINTLN(F("Sending to the queue..."));
         if (xQueueSend(BTQueue, &data, pdMS_TO_TICKS(100)) == pdPASS)
         {
-            DEBUG_PRINTLN(CLR_GREEN "Data sent to BTQueue successfully." CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_GREEN "Data sent to BTQueue successfully." CLR_RESET));
         } else {
-            DEBUG_PRINTLN(CLR_RED "Bluetooth Queue Full! Data lost." CLR_RESET);
+            DEBUG_PRINTLN(F(CLR_RED "Bluetooth Queue Full! Data lost." CLR_RESET));
         }
     }
 };
 
 void setupBluetooth()
 {
-    DEBUG_PRINTLN(CLR_YELLOW "Creating the queue..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Creating the queue..." CLR_RESET));
     #if ASYNC_SD_HANDLER
         BTQueue = xQueueCreate(50, sizeof(BTData));
     #else
         BTQueue = xQueueCreate(20, sizeof(BTData));
     #endif
 
-    DEBUG_PRINTLN(CLR_YELLOW "Starting bluetooth modules..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Starting bluetooth modules..." CLR_RESET));
     BLEDevice::init("");
 
     pBLEscan = BLEDevice::getScan(); 
@@ -109,8 +110,8 @@ void setupBluetooth()
 
 void BluetoothSniffer()
 {
-    DEBUG_PRINTLN(CLR_YELLOW "Starting bluetooth scan..." CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_YELLOW "Starting bluetooth scan..." CLR_RESET));
     pBLEscan->start(SCAN_TIME, false);
     pBLEscan->clearResults(); 
-    DEBUG_PRINTLN(CLR_GREEN "BLE Scan done!" CLR_RESET);
+    DEBUG_PRINTLN(F(CLR_GREEN "BLE Scan done!" CLR_RESET));
 }
