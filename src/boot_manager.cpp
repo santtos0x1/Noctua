@@ -30,6 +30,13 @@ void configCheck()
     #else
         DEBUG_PRINTF(F("%s[ DISABLED  ]%s\n"), CLR_RED, CLR_RESET);
     #endif
+    
+    DEBUG_PRINT(F("> Debug colors: "));
+    #if SYS_CFG_USE_ANSI_COLORS
+        DEBUG_PRINTF(F("%s[ ENABLED  ]%s\n"), CLR_GREEN, CLR_RESET);
+    #else
+        DEBUG_PRINTF(F("%s[ DISABLED  ]%s\n"), CLR_RED, CLR_RESET);
+    #endif
 
     DEBUG_PRINT(F("> SD Storage:      "));
     #if SYS_FEATURE_SD_STORAGE

@@ -2,10 +2,21 @@
 #define UTILS_H
 
 // Terminal debug colors
-#define CLR_RED     "\033[0;31m"
-#define CLR_GREEN   "\033[0;32m"
-#define CLR_YELLOW  "\033[0;33m"
-#define CLR_RESET   "\033[0m"
+#define SYS_CFG_USE_ANSI_COLORS    0
+
+#if SYS_CFG_USE_ANSI_COLORS
+    #define CLR_RESET  "\e[0m"
+    #define CLR_RED    "\e[31m"
+    #define CLR_GREEN  "\e[32m"
+    #define CLR_YELLOW "\e[33m"
+    #define CLR_CYN    "\e[36m"
+#else
+    #define CLR_RESET  ""
+    #define CLR_RED    ""
+    #define CLR_GREEN  ""
+    #define CLR_YELLOW ""
+    #define CLR_CYN    ""
+#endif
 
 // wifi_scan.cpp
 #define CONN_TIMEOUT_MS       (10 * 1000)
