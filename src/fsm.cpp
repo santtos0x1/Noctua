@@ -25,8 +25,6 @@ String scanMode;
 
 // Status flag for the asynchronous HTTP service
 bool serverStatus = false;
-uint8_t systemState = 0;
-
 /**
  * Bootstraps the FSM and initializes all modular subsystems 
  * based on the global build configuration.

@@ -4,6 +4,7 @@
 #include "config.h"
 
 void setupSD();
+
 void processWiFiLog(WiFiData data);
 void processBluetoothLog(BTData data);
 void processWardriveLog(WardriveData data);

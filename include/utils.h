@@ -1,8 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-// Terminal debug colors
-#define SYS_CFG_USE_ANSI_COLORS    0
+#include "config.h"
+
 
 #if SYS_CFG_USE_ANSI_COLORS
     #define CLR_RESET  "\e[0m"

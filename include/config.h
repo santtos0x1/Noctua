@@ -12,6 +12,7 @@
 #define SYS_FEATURE_BLE_STACK   1
 #define SYS_CFG_DEBUG_MODE      1
 #define ASYNC_SD_HANDLER        1
+#define SYS_CFG_USE_ANSI_COLORS 0
 
 /* * =================================================================
  * DEBUGGING MACROS
