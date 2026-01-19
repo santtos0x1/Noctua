@@ -83,8 +83,10 @@ void runFSM()
 
                 while(digitalRead(Pins::BTN_A) == LOW); // Wait for release of first click
 
-                while(millis() < gap) {
-                    if (digitalRead(Pins::BTN_A) == LOW) {
+                while(millis() < gap)
+                {
+                    if (digitalRead(Pins::BTN_A) == LOW)
+                    {
                         doubleClicked = true;
                         break;
                     }
@@ -211,7 +213,8 @@ void runFSM()
                 processAllLogsSequential();
             #endif
             
-            if(openFound) {
+            if(openFound)
+            {
                 // Visual feedback for open networks found during wardrive
                 DEBUG_PRINTLN(F(CLR_GREEN "Open Network Found!" CLR_RESET));
                 showSuccess(Pins::BUILT_IN_LED); 

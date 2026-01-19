@@ -26,4 +26,10 @@
     (rssi >= -85) ? "Weak"   : "V.Weak" \
 )
 
+//bluetooth_scan.cpp
+#define GET_ADDR_TYPE(type) \
+    ((type == BLE_ADDR_TYPE_PUBLIC)     ? "Public"     : \
+     (type == BLE_ADDR_TYPE_RANDOM)     ? "Random"     : \
+     (type == BLE_ADDR_TYPE_RPA_PUBLIC) ? "RPA_Public" : \
+     (type == BLE_ADDR_TYPE_RPA_RANDOM) ? "RPA_Random" : "Unknown")
 #endif // !UTILS_h

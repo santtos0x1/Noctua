@@ -47,34 +47,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
 
         DEBUG_PRINTLN(F("Getting device address type..."));
         esp_ble_addr_type_t type = advertisedDevice.getAddressType();
-        switch (type)
-        {
-            case BLE_ADDR_TYPE_PUBLIC:
-            {
-                strncpy(data.addressType, "Public",     sizeof(data.addressType) - 1);
-                break;
-            }
-            case BLE_ADDR_TYPE_RANDOM:
-            {
-                strncpy(data.addressType, "Random",     sizeof(data.addressType) - 1);
-                break;
-            }
-            case BLE_ADDR_TYPE_RPA_PUBLIC:
-            {
-                strncpy(data.addressType, "RPA_Public", sizeof(data.addressType) - 1);
-                break;
-            }
-            case BLE_ADDR_TYPE_RPA_RANDOM:
-            {
-                strncpy(data.addressType, "RPA_Random", sizeof(data.addressType) - 1);
-                break;
-            }
-            default:
-            {
-                strncpy(data.addressType, "Unknown",    sizeof(data.addressType) - 1);
-                break;
-            }
-        }
+        strncpy(data.addressType, GET_ADDR_TYPE(type), sizeof(data.addressType) - 1);
 
         DEBUG_PRINTLN(F("Defining channel..."));
         data.channel = 0; 
