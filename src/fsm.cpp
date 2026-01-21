@@ -1,4 +1,3 @@
-// Local libs
 #include "http_server.h"
 #include "data_logger.h"
 #include "wifi_scan.h"
@@ -15,6 +14,8 @@
 #include <WiFi.h>
 
 State currentState;
+
+int menuIndex = 1;
 
 // Edge detection variables for physical buttons (Debouncing)
 bool btnALastState = HIGH;
@@ -82,42 +83,31 @@ void runFSM()
         case IDLE:
         {
             idleState(Pins::LED_1, Pins::LED_2);
-            if(btnAPressed) 
+            if (btnAPressed)
             {
-                // Double-click detection logic for mode switching
-                unsigned long gap = millis() + 400; // 400ms detection window
-                bool doubleClicked = false; 
+                menuIndex++;
+                if (menuIndex > 4) menuIndex = 1;
+                
+                DEBUG_PRINTF("Menu Option Selected: %d\n", menuIndex);
+                showOn(Pins::LED_1); 
+                delay(50);
+                showOff(Pins::LED_1);
+            }
 
-                while(digitalRead(Pins::BTN_A) == LOW); 
+            if (btnBPressed)
+            {
+                DEBUG_PRINTF("Confirming State: %d\n", menuIndex);
+                
+                if (menuIndex == 1) scanMode = "WF";
+                else if (menuIndex == 2) scanMode = "BT";
+                else if (menuIndex == 3) scanMode = "WD";
+                else if (menuIndex == 4) scanMode = "WS";
 
-                while(millis() < gap)
-                {
-                    if (digitalRead(Pins::BTN_A) == LOW)
-                    {
-                        doubleClicked = true;
-                        break;
-                    }
-                }
-
-                if(doubleClicked)
-                {
-                    scanMode = "WD"; // Enter Wardriving mode (Signal)
-                    currentState = WARDRIVE_MODE;
-                    showOn(Pins::BUILT_IN_LED);
-                } else {
-                    scanMode = "WF"; // Enter standard WiFi Sniffer mode
-                    currentState = SCAN;
-                }
-                break;
-            } else if(btnBPressed) {
-                scanMode = "BT"; // Enter Bluetooth Sniffer mode
-                currentState = SCAN;
-                break;
-            } else if(btnCPressed) {
-                scanMode = "WS"; // Enter Web server mode
-                currentState = WEB_SERVER;
-                break;
-            } 
+                currentState = (State)menuIndex; 
+                
+                showSuccess(Pins::LED_2);
+            }
+            
             break;
         }
 

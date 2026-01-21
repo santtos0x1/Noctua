@@ -67,8 +67,9 @@ namespace Pins
   static constexpr uint8_t BTN_C         = 14;
   // Leds
   static constexpr uint8_t BUILT_IN_LED  = 2;
-  static constexpr uint8_t LED_1         = 18;
+  static constexpr uint8_t LED_1         = 18; 
   static constexpr uint8_t LED_2         = 17;
+  static constexpr uint8_t LED_3         = 19;
   // SD module
   static constexpr uint8_t SD_CS         = 5;
   static constexpr uint8_t MISO          = 19;
