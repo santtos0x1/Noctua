@@ -15,14 +15,14 @@
 
 State currentState;
 
-int menuIndex = 1;
+int menuIndex = 0;
 
-// Edge detection variables for physical buttons (Debouncing)
+// Edge detection variables for physical buttons
 bool btnALastState = HIGH;
 bool btnBLastState = HIGH;
-bool btnCLastState = HIGH;
 
-// Operational flag to define the current scanning technology (WiFi, BT, or Wardrive)
+
+// Operational flag to define the current scanning technology
 String scanMode;
 
 // Status flag for the asynchronous HTTP service
@@ -54,11 +54,11 @@ void setupFSM()
     // Core services and UI feedback initialization
     setupIndicator(Pins::LED_1);
     setupIndicator(Pins::LED_2);
+    setupIndicator(Pins::LED_3);
 
     // Hardware Input configuration with internal pull-up resistors
     pinMode(Pins::BTN_A, INPUT_PULLUP);
     pinMode(Pins::BTN_B, INPUT_PULLUP); 
-    pinMode(Pins::BTN_C, INPUT_PULLUP);
 
     // Initial state assignment
     currentState = IDLE;
@@ -73,7 +73,6 @@ void runFSM()
     // Capture instantaneous button states for transition triggers
     bool btnAPressed = (digitalRead(Pins::BTN_A) == LOW && btnALastState == HIGH);
     bool btnBPressed = (digitalRead(Pins::BTN_B) == LOW && btnBLastState == HIGH);
-    bool btnCPressed = (digitalRead(Pins::BTN_C) == LOW && btnCLastState == HIGH);
 
     switch(currentState)
     {
@@ -82,30 +81,54 @@ void runFSM()
         */
         case IDLE:
         {
-            idleState(Pins::LED_1, Pins::LED_2);
+            idleState(Pins::LED_1, Pins::LED_2, Pins::LED_3);
+
             if (btnAPressed)
             {
                 menuIndex++;
-                if (menuIndex > 4) menuIndex = 1;
+                if (menuIndex > 3) menuIndex = 0;
                 
-                DEBUG_PRINTF("Menu Option Selected: %d\n", menuIndex);
-                showOn(Pins::LED_1); 
-                delay(50);
-                showOff(Pins::LED_1);
+                if(menuIndex == 0)
+                {
+                    showOff(Pins::LED_1);
+                    showOff(Pins::LED_2);
+                } else if (menuIndex == 1)
+                {
+                    showOn(Pins::LED_1);
+                } else if (menuIndex == 2)
+                {
+                    showOff(Pins::LED_1);
+                    showOn(Pins::LED_2);
+                } else if (menuIndex == 3)
+                {
+                    showOn(Pins::LED_1); 
+                    showOn(Pins::LED_2);
+                }
+
+                DEBUG_PRINTF("Menu Option Selected: %s\n", GET_STATE(menuIndex));
+                // showOn(Pins::LED_1); 
+                // delay(Time::LOW_DELAY);
+                // showOff(Pins::LED_1);
             }
 
             if (btnBPressed)
             {
-                DEBUG_PRINTF("Confirming State: %d\n", menuIndex);
-                
-                if (menuIndex == 1) scanMode = "WF";
-                else if (menuIndex == 2) scanMode = "BT";
-                else if (menuIndex == 3) scanMode = "WD";
-                else if (menuIndex == 4) scanMode = "WS";
+                DEBUG_PRINTF("Confirming Mode: %s\n", GET_STATE(menuIndex));
+                    
+                if (menuIndex == 0) scanMode = "WF";
+                else if (menuIndex == 1) scanMode = "BT";
+                else if (menuIndex == 2) scanMode = "WD";
+                else if (menuIndex == 3) scanMode = "WS";
 
-                currentState = (State)menuIndex; 
+                if(menuIndex == 0 || menuIndex == 1) currentState = SCAN;
+                else currentState = (State)menuIndex; 
                 
-                showSuccess(Pins::LED_2);
+                showOff(Pins::LED_1);
+                showOff(Pins::LED_2);
+
+                showOn(Pins::LED_3); 
+                delay(Time::LMID_DELAY);
+                showOff(Pins::LED_3);
             }
             
             break;
@@ -122,7 +145,7 @@ void runFSM()
                 if(!sdReport)
                 {
                     DEBUG_PRINTLN(F(CLR_RED "SD Health Check FAILED!" CLR_RESET));
-                    showError(Pins::BUILT_IN_LED);
+                    showError(Pins::LED_2);
                     setupSD(); // Attempt hardware re-initialization
                     currentState = IDLE;
                     break;
@@ -132,14 +155,15 @@ void runFSM()
             if(scanMode == "WF")
             {   
                 showOn(Pins::LED_1);
-                delay(300);
+                delay(Time::LMID_DELAY);
                 showOff(Pins::LED_1);
+
                 #if SYS_FEATURE_WIFI_SCAN
                     wifiSniffer(); // Start 802.11 packet capture
                     #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
                         processAllLogsSequential();
                     #endif    
-                    showSuccess(Pins::LED_2);
+                    showSuccess(Pins::LED_3);
                 #endif
 
                 currentState = IDLE;
@@ -147,14 +171,15 @@ void runFSM()
 
             } else if(scanMode == "BT") {
                 showOn(Pins::LED_1);
-                delay(300);
+                delay(Time::LMID_DELAY);
                 showOff(Pins::LED_1);
+
                 #if SYS_FEATURE_BLE_STACK
                     BluetoothSniffer(); // Start BLE advertising discovery    
                     #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
                         processAllLogsSequential();
                     #endif
-                    showSuccess(Pins::LED_2);
+                    showSuccess(Pins::LED_3);
                 #endif
 
                 currentState = IDLE;
@@ -176,28 +201,26 @@ void runFSM()
                     
                     if (!serverStatus) {
                         DEBUG_PRINTLN(F(CLR_RED "Failed to connect to Home WiFi!" CLR_RESET));
-                        showError(Pins::LED_1);
+                        menuIndex = 0;
                         currentState = IDLE;
+                        
+                        showError(Pins::LED_2);
                         break;
                     }
                 }
-
-                showSuccess(Pins::LED_2);
-                serverRun(); 
                 
                 // Exit condition
-                if(btnBPressed)
-                {
-                    showError(Pins::BUILT_IN_LED);
+                if (!serverRun()) { 
                     DEBUG_PRINTLN("Exiting and shutting down WiFi...");
-                    
-                    WiFi.disconnect(true); 
-                    WiFi.mode(WIFI_OFF);
-
                     serverStatus = false;
+                    menuIndex = 0; 
                     currentState = IDLE;
+                    
+                    showError(Pins::LED_2);
                     break;
                 }
+
+                digitalWrite(Pins::LED_3, (millis() % 2000 < 100));
             #else
                 DEBUG_PRINTLN(F("Server Feature Disabled in Config!"));
                 currentState = IDLE;
@@ -233,7 +256,7 @@ void runFSM()
                 {
                     // Visual feedback for open networks found during wardrive
                     DEBUG_PRINTLN(F(CLR_GREEN "Open Network Found!" CLR_RESET));
-                    showSuccess(Pins::LED_2); 
+                    showSuccess(Pins::LED_3); 
                 }
             #endif
             break;   
@@ -243,5 +266,4 @@ void runFSM()
     // Update edge detection buffers for the next cycle
     btnALastState = digitalRead(Pins::BTN_A);
     btnBLastState = digitalRead(Pins::BTN_B);
-    btnCLastState = digitalRead(Pins::BTN_C);
 }

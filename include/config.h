@@ -62,9 +62,8 @@
 namespace Pins 
 {
   // Buttons
-  static constexpr uint8_t BTN_A         = 16;
-  static constexpr uint8_t BTN_B         = 0;
-  static constexpr uint8_t BTN_C         = 14;
+  static constexpr uint8_t BTN_A         = 0;
+  static constexpr uint8_t BTN_B         = 16;
   // Leds
   static constexpr uint8_t BUILT_IN_LED  = 2;
   static constexpr uint8_t LED_1         = 18; 
@@ -82,7 +81,7 @@ namespace Pins
  * =================================================================
  */
 namespace Time {
-  static constexpr uint8_t LOW_DELAY   = 100;
+  static constexpr uint8_t  LOW_DELAY  = 100;
   static constexpr uint16_t LMID_DELAY = 300;
   static constexpr uint16_t MID_DELAY  = 500;
   static constexpr uint16_t HMID_DELAY = 1000;

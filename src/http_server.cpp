@@ -141,10 +141,17 @@ void sendIndexSD(WiFiClient& client)
 /**
    Main server runtime loop.
  */
-void serverRun()
+bool serverRun()
 {   
     WiFiClient client = server.available();
     
+    if (digitalRead(Pins::BTN_B) == LOW) {
+        WiFi.mode(WIFI_OFF);
+        client.stop();
+        WiFi.disconnect(true);
+        return false;
+    }
+
     if(client)
     {
         long timeout = millis();
@@ -154,7 +161,7 @@ void serverRun()
 
         if(!client.available()) {
             client.stop();
-            return;
+            return false;
         }
 
         DEBUG_PRINTLN(F(CLR_GREEN "New client connection established." CLR_RESET));
@@ -178,4 +185,5 @@ void serverRun()
         DEBUG_PRINTLN(F(CLR_YELLOW "Client session terminated." CLR_RESET));
         WiFi.disconnect();
     }
+    return true;
 }

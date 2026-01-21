@@ -5,6 +5,10 @@
 // Libs
 #include <Arduino.h>
 
+unsigned long lastIdleUpdate = 0;
+int idleStep = 0;
+bool isIdleActive = true;
+
 /**
    Configures the LED GPIO pin as a digital output.
    Essential step to allow current control for the visual indicator.
@@ -74,11 +78,7 @@ void showOff(int ledPinout)
     digitalWrite(ledPinout, LOW); 
 }
 
-unsigned long lastIdleUpdate = 0;
-int idleStep = 0;
-bool isIdleActive = true;
-
-void idleState(int ledPinout1, int ledPinout2)
+void idleState(int ledPinout1, int ledPinout2, int ledPinout3)
 {
     unsigned long currentMillis = millis();
     if(currentMillis - lastIdleUpdate >= 200)
@@ -90,18 +90,43 @@ void idleState(int ledPinout1, int ledPinout2)
             case 1: 
                 digitalWrite(ledPinout1, HIGH); 
                 digitalWrite(ledPinout2, LOW); 
+                digitalWrite(ledPinout3, LOW); 
                 break;
             case 2: 
                 digitalWrite(ledPinout1, LOW); 
                 digitalWrite(ledPinout2, HIGH); 
+                digitalWrite(ledPinout3, LOW); 
                 break;
             case 3: 
-                digitalWrite(ledPinout1, HIGH); 
+                digitalWrite(ledPinout1, LOW); 
                 digitalWrite(ledPinout2, LOW); 
+                digitalWrite(ledPinout3, HIGH); 
+                break;
+            case 4:
+                digitalWrite(ledPinout1, LOW); 
+                digitalWrite(ledPinout2, LOW); 
+                digitalWrite(ledPinout3, LOW);
+                digitalWrite(ledPinout3, HIGH); 
+                break;
+            case 5:
+                digitalWrite(ledPinout1, LOW); 
+                digitalWrite(ledPinout2, HIGH); 
+                digitalWrite(ledPinout3, LOW); 
+                break;
+            case 6:
+                digitalWrite(ledPinout1, HIGH);
+                digitalWrite(ledPinout2, LOW); 
+                digitalWrite(ledPinout3, LOW);  
+                break;
+            case 7:
+                digitalWrite(ledPinout1, HIGH);
+                digitalWrite(ledPinout2, LOW); 
+                digitalWrite(ledPinout3, LOW);  
                 break;
             default: 
                 digitalWrite(ledPinout1, LOW); 
                 digitalWrite(ledPinout2, LOW);
+                digitalWrite(ledPinout3, LOW); 
                 idleStep = 0;
                 isIdleActive = false;
                 break;

@@ -26,6 +26,14 @@
     (rssi >= -85) ? "Weak"   : "V.Weak" \
 )
 
+//fsm.cpp
+#define GET_STATE(index) ( \
+    (index == 0) ? "WiFi"       : \
+    (index == 1) ? "Bluetooth"  : \
+    (index == 2) ? "Wardrive"   : \
+    (index == 3) ? "Web Server" : "" \
+)
+
 //bluetooth_scan.cpp
 #define GET_ADDR_TYPE(type) \
     ((type == BLE_ADDR_TYPE_PUBLIC)     ? "Public"     : \

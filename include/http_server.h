@@ -4,6 +4,6 @@
 void sendIndexSD();
 void handleDownload();
 bool startServer();
-void serverRun(); 
+bool serverRun(); 
 
 #endif // !HTTP_SERVER_H
