@@ -81,55 +81,38 @@ void showOff(int ledPinout)
 void idleState(int ledPinout1, int ledPinout2, int ledPinout3)
 {
     unsigned long currentMillis = millis();
-    if(currentMillis - lastIdleUpdate >= 200)
+    if(currentMillis - lastIdleUpdate >= 120) 
     {
         if (!isIdleActive) return;
         lastIdleUpdate = currentMillis;
         idleStep++;
+        
         switch(idleStep) {
-            case 1: 
-                digitalWrite(ledPinout1, HIGH); 
-                digitalWrite(ledPinout2, LOW); 
-                digitalWrite(ledPinout3, LOW); 
-                break;
-            case 2: 
-                digitalWrite(ledPinout1, LOW); 
-                digitalWrite(ledPinout2, HIGH); 
-                digitalWrite(ledPinout3, LOW); 
-                break;
-            case 3: 
-                digitalWrite(ledPinout1, LOW); 
-                digitalWrite(ledPinout2, LOW); 
-                digitalWrite(ledPinout3, HIGH); 
-                break;
-            case 4:
-                digitalWrite(ledPinout1, LOW); 
-                digitalWrite(ledPinout2, LOW); 
-                digitalWrite(ledPinout3, LOW);
-                digitalWrite(ledPinout3, HIGH); 
-                break;
-            case 5:
-                digitalWrite(ledPinout1, LOW); 
-                digitalWrite(ledPinout2, HIGH); 
-                digitalWrite(ledPinout3, LOW); 
-                break;
-            case 6:
-                digitalWrite(ledPinout1, HIGH);
-                digitalWrite(ledPinout2, LOW); 
-                digitalWrite(ledPinout3, LOW);  
-                break;
-            case 7:
-                digitalWrite(ledPinout1, HIGH);
-                digitalWrite(ledPinout2, LOW); 
-                digitalWrite(ledPinout3, LOW);  
-                break;
+            case 1: digitalWrite(ledPinout2, HIGH); break; 
+            case 2: digitalWrite(ledPinout1, HIGH); digitalWrite(ledPinout3, HIGH); break;
+            
+            case 3: digitalWrite(ledPinout1, HIGH); digitalWrite(ledPinout2, LOW);  digitalWrite(ledPinout3, LOW);  break;
+            case 4: digitalWrite(ledPinout1, LOW);  digitalWrite(ledPinout2, HIGH); digitalWrite(ledPinout3, LOW);  break;
+            case 5: digitalWrite(ledPinout1, LOW);  digitalWrite(ledPinout2, LOW);  digitalWrite(ledPinout3, HIGH); break;
+            case 6: digitalWrite(ledPinout1, LOW);  digitalWrite(ledPinout2, HIGH); digitalWrite(ledPinout3, LOW);  break;
+            case 7: digitalWrite(ledPinout1, HIGH); digitalWrite(ledPinout2, LOW);  digitalWrite(ledPinout3, LOW);  break;
+
+            case 8:  allLeds(LOW);  break;
+            case 9:  allLeds(HIGH); break;
+            case 10: allLeds(LOW);  break;
+            case 11: allLeds(HIGH); break;
+            
             default: 
-                digitalWrite(ledPinout1, LOW); 
-                digitalWrite(ledPinout2, LOW);
-                digitalWrite(ledPinout3, LOW); 
+                allLeds(LOW);
                 idleStep = 0;
-                isIdleActive = false;
+                isIdleActive = false; 
                 break;
         }
     }
+}
+
+void allLeds(int state) {
+    digitalWrite(Pins::LED_3, state);
+    digitalWrite(Pins::LED_2, state);
+    digitalWrite(Pins::LED_1, state);
 }

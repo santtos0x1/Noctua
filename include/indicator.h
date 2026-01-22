@@ -8,5 +8,6 @@ void showError(int ledPinout);
 void showOn(int ledPinout);
 void showOff(int ledPinout);
 void idleState(int ledPinout1, int ledPinout2, int ledPinout3);
+void allLeds(int state);
 
 #endif // !INDICATOR_H

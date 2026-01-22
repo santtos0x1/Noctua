@@ -153,10 +153,6 @@ void runFSM()
             
             if(scanMode == "WF")
             {   
-                showOn(Pins::LED_1);
-                delay(Time::LMID_DELAY);
-                showOff(Pins::LED_1);
-
                 #if SYS_FEATURE_WIFI_SCAN
                     wifiSniffer(); // Start 802.11 packet capture
                     #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
@@ -169,10 +165,6 @@ void runFSM()
                 break;
 
             } else if(scanMode == "BT") {
-                showOn(Pins::LED_1);
-                delay(Time::LMID_DELAY);
-                showOff(Pins::LED_1);
-
                 #if SYS_FEATURE_BLE_STACK
                     BluetoothSniffer(); // Start BLE advertising discovery    
                     #if !ASYNC_SD_HANDLER && SYS_FEATURE_SD_STORAGE
@@ -240,6 +232,7 @@ void runFSM()
                 
                 WiFi.scanDelete(); 
                 
+                menuIndex = 0;
                 currentState = IDLE;
                 showOff(Pins::LED_1);
                 break;
